@@ -1,26 +1,11 @@
 {
-	"name": "bibo-tracker",
-	"version": "1.0.0",
-	"description": "node application for scraping availability information from Bibliothek Halle (Saale)",
-	"type": "module",
-	"scripts": {
-		"build": "tsc",
-		"start": "node dist/index.js",
-		"dev": "ts-node src/index.ts",
-		"lint": "biome lint",
-		"format": "biome format --write"
-	},
-	"keywords": [],
-	"author": "hello@rbeier,dev",
-	"license": "MIT",
-	"dependencies": {
-		"playwright": "^1.49.1"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@playwright/test": "^1.49.1",
-		"@types/node": "^22.10.5",
-		"ts-node": "^10.9.2",
-		"typescript": "^5.7.3"
-	}
+  "name": "bibo-tracker",
+  "module": "src/index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
 }
