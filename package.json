@@ -1,11 +1,16 @@
 {
-  "name": "bibo-tracker",
-  "module": "src/index.ts",
-  "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  }
+	"name": "bibo-tracker",
+	"module": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"dev": "bun src/index.ts",
+		"init": "bun src/index.ts --init",
+		"postinstall": "bun run init"
+	},
+	"devDependencies": {
+		"@types/bun": "1.2.0"
+	},
+	"peerDependencies": {
+		"typescript": "^5.7.3"
+	}
 }
