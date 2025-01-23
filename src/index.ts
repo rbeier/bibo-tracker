@@ -1,5 +1,5 @@
 import { parseArgs } from 'node:util';
-import initApplication from './commands/init.ts';
+import { Store } from './lib/store.ts';
 
 const { values } = parseArgs({
 	args: Bun.argv,
@@ -13,7 +13,9 @@ const { values } = parseArgs({
 });
 
 if (values.init) {
-	initApplication();
+	await Store.init();
 } else {
+	Store.checkExistence();
+	console.log(Store.getItem('books'));
 	console.log('execute application');
 }
