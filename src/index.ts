@@ -14,4 +14,6 @@ const { values } = parseArgs({
 
 if (values.init) {
 	initApplication();
+} else {
+	console.log('execute application');
 }

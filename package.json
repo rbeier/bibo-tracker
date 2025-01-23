@@ -5,12 +5,17 @@
 	"scripts": {
 		"dev": "bun src/index.ts",
 		"init": "bun src/index.ts --init",
-		"postinstall": "bun run init"
+		"format": "biome format"
 	},
 	"devDependencies": {
-		"@types/bun": "1.2.0"
+		"@types/bun": "1.2.0",
+		"@types/luxon": "^3.4.2",
+		"biome": "^0.3.3"
 	},
 	"peerDependencies": {
 		"typescript": "^5.7.3"
+	},
+	"dependencies": {
+		"luxon": "^3.5.0"
 	}
 }
