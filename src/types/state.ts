@@ -1,6 +1,6 @@
-import type { Book } from './book.ts';
+import type { Book } from './models/book.ts';
 
 export type State = {
 	books: Book[];
-	bla?: boolean;
+	bla: boolean;
 };

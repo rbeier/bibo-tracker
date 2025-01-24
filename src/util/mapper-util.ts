@@ -1,0 +1,21 @@
+import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+import type { Book } from '../types/models/book.ts';
+import type { RichTextProperty } from '../types/notion/rich-text-property.ts';
+import type { TitleProperty } from '../types/notion/title-property.ts';
+
+export function notionPageToBook(page: PageObjectResponse): Book {
+	return {
+		notionId: page.id,
+		author: getRichTextPropertyValue(page.properties.Autor as RichTextProperty),
+		title: getTitlePropertyValue(page.properties.Titel as TitleProperty),
+		lastChecked: null,
+	};
+}
+
+export function getRichTextPropertyValue(property: RichTextProperty) {
+	return property.rich_text[0]?.plain_text;
+}
+
+export function getTitlePropertyValue(property: TitleProperty) {
+	return property.title[0]?.plain_text;
+}

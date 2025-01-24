@@ -1,21 +1,14 @@
-import { parseArgs } from 'node:util';
-import { Store } from './lib/store.ts';
+import { reloadBookList } from './commands/reload-book-list.ts';
+import { Store } from './lib/store/store.ts';
+import { parseCliArgs } from './util/cli-args.ts';
 
-const { values } = parseArgs({
-	args: Bun.argv,
-	options: {
-		init: {
-			type: 'boolean',
-		},
-	},
-	strict: true,
-	allowPositionals: true,
-});
+const args = parseCliArgs();
 
-if (values.init) {
+if (args.init) {
 	await Store.init();
-} else {
+}
+
+if (args.reloadBooks) {
 	Store.checkExistence();
-	console.log(Store.getItem('books'));
-	console.log('execute application');
+	await reloadBookList();
 }

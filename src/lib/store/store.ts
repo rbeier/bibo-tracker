@@ -1,4 +1,4 @@
-import type { State } from '../types/state.ts';
+import type { State } from '../../types/state.ts';
 
 let jsonStore: State | undefined;
 const storePath = './store/store.json';
@@ -9,6 +9,7 @@ try {
 
 const initialState: State = {
 	books: [],
+	bla: false,
 };
 
 // biome-ignore lint/complexity/noStaticOnlyClass: Exception for Store class
@@ -16,13 +17,13 @@ export class Store {
 	static #state: State = (jsonStore as State) || {};
 
 	// biome-ignore lint/suspicious/noExplicitAny: value can't be type checked against State type
-	static setItem(key: keyof State, value: any) {
+	static async setItem(key: keyof State, value: any) {
 		Store.#state[key] = value;
-		Store.#writeJsonStore(Store.#state);
+		return Store.#writeJsonStore(Store.#state);
 	}
 
-	static getItem(key: keyof State) {
-		return Store.#state[key];
+	static getItem<T>(key: keyof State): T {
+		return Store.#state[key] as T;
 	}
 
 	static getState() {
@@ -30,9 +31,7 @@ export class Store {
 	}
 
 	static async init() {
-		await Store.#writeJsonStore(initialState);
-		console.log('Store initialized');
-		process.exit(0);
+		return Store.#writeJsonStore(initialState);
 	}
 
 	static #writeJsonStore = async (state: State) => {

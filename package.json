@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "bun src/index.ts",
 		"init": "bun src/index.ts --init",
+		"reload-books": "bun src/index.ts --reloadBooks",
 		"format": "biome format"
 	},
 	"devDependencies": {
@@ -16,6 +17,7 @@
 		"typescript": "^5.7.3"
 	},
 	"dependencies": {
+		"@notionhq/client": "^2.2.15",
 		"luxon": "^3.5.0"
 	}
 }
