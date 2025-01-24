@@ -15,7 +15,7 @@ export default defineConfig({
 	workers: 1,
 	reporter: 'html',
 	use: {
-		trace: 'on-first-retry',
+		trace: 'on',
 		headless: true,
 	},
 

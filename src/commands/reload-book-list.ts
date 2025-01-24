@@ -12,5 +12,4 @@ export async function reloadBookList() {
 	await updateBooksInStore(books);
 
 	console.log('book list refreshed');
-	process.exit(0);
 }

@@ -10,6 +10,9 @@ export function parseCliArgs() {
 			reloadBooks: {
 				type: 'boolean',
 			},
+			checkBooks: {
+				type: 'boolean',
+			},
 		},
 		strict: true,
 		allowPositionals: true,
