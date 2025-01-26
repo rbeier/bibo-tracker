@@ -14,6 +14,7 @@ export function queryBookList() {
 }
 
 export async function updateBookStatus(book: Book, isAvailable: boolean) {
+	// noinspection JSNonASCIINames,NonAsciiCharacters
 	return notionClient().pages.update({
 		page_id: book.notionId,
 		properties: {
