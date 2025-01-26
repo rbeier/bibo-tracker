@@ -1,8 +1,5 @@
 import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import {
-	queryBookList,
-	updateBookStatus,
-} from '../lib/notion/notion-connector.ts';
+import { queryBookList, updateBookStatus } from '../lib/notion/notion-connector.ts';
 import { checkAvailability, launchBrowser } from '../lib/scraper/scraper.ts';
 import type { Book } from '../types/models/book.ts';
 import { notionPageToBook } from '../util/mapper-util.ts';
