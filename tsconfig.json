@@ -6,6 +6,8 @@
 		"moduleDetection": "force",
 		"jsx": "react-jsx",
 		"allowJs": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
 
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true,

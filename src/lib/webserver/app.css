@@ -1,0 +1,77 @@
+:root {
+	/* copied from https://picocss.com/docs/colors */
+	--pico-color-jade-950: #04140c;
+	--pico-color-jade-900: #052014;
+	--pico-color-jade-850: #042c1b;
+	--pico-color-jade-800: #033823;
+	--pico-color-jade-750: #00452b;
+	--pico-color-jade-700: #015234;
+	--pico-color-jade-650: #005f3d;
+	--pico-color-jade-600: #006d46;
+	--pico-color-jade-550: #007a50;
+	--pico-color-jade-500: #00895a;
+	--pico-color-jade-450: #029764;
+	--pico-color-jade-400: #00a66e;
+	--pico-color-jade-350: #00b478;
+	--pico-color-jade-300: #00c482;
+	--pico-color-jade-250: #00cc88;
+	--pico-color-jade-200: #21e299;
+	--pico-color-jade-150: #39f1a6;
+	--pico-color-jade-100: #70fcba;
+	--pico-color-jade-50: #cbfce1;
+	--pico-color-jade: #007a50;
+
+	--pico-color-red-700: #861d13;
+
+	/* https://github.com/system-fonts/modern-font-stacks */
+	--heading-font: Rockwell, "Rockwell Nova", "Roboto Slab", "DejaVu Serif", "Sitka Small", serif;
+}
+
+h1.title {
+	margin: 2rem 0 1rem 0;
+	text-align: center;
+	color: var(--pico-color-jade);
+	font-family: var(--heading-font), sans-serif;
+	font-weight: 200;
+	font-size: xxx-large;
+}
+
+.app-icon {
+	transform: scale(1.35);
+	margin-left: 1rem;
+	stroke-width: 2px;
+	position: relative;
+	bottom: 1px;
+}
+
+.list-container {
+	display: grid;
+	flex-wrap: wrap;
+	grid-template-columns: repeat(2, minmax(300px, 1fr));
+	gap: 0 1rem;
+
+	/* on mobile */
+	@media (max-width: 767px) {
+		grid-template-columns: 1fr;
+	}
+}
+
+article {
+	height: 138px;
+	/*display: flex;*/
+	/*flex-wrap: wrap;*/
+}
+
+article.available {
+	background: var(--pico-color-jade-700);
+}
+
+article.unavailable {
+	background: var(--pico-color-red-700);
+}
+
+.author {
+	margin: 0;
+	font-size: smaller;
+	font-style: italic;
+}

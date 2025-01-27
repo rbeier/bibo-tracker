@@ -1,12 +1,11 @@
 {
 	"name": "bibo-tracker",
-	"module": "src/index.ts",
-	"type": "module",
 	"scripts": {
 		"start": "bun src/index.ts",
 		"check-books": "bun src/index.ts --checkBooks",
 		"format": "biome format",
-		"lint": "biome lint"
+		"lint": "biome lint",
+		"prestart": "echo 'foo'"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
@@ -19,6 +18,7 @@
 	},
 	"dependencies": {
 		"@notionhq/client": "^2.2.15",
+		"@picocss/pico": "^2.0.6",
 		"@playwright/test": "^1.50.0",
 		"cron": "^3.5.0",
 		"playwright": "^1.50.0",

@@ -1,3 +1,4 @@
+import { serve } from 'bun';
 import { checkBooks } from './commands/check-books.ts';
 import { handleRequests } from './lib/webserver/request-handler.tsx';
 import { parseCliArgs } from './util/cli-args.ts';
@@ -17,9 +18,10 @@ scheduleCommand('0 10 * * 1-6', checkBooks);
 scheduleCommand('0 16 * * 1-6', checkBooks);
 
 // web interface
-const server = Bun.serve({
+serve({
 	port: process.env.WEBSERVER_PORT,
 	fetch: handleRequests,
+	development: true,
 });
 
-console.log(`Webserver is listening on ${server.url}`);
+console.log(`Webserver is listening on ${process.env.WEBSERVER_PORT}`);

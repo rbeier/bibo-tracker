@@ -4,7 +4,7 @@ import { checkAvailability, launchBrowser } from '../lib/scraper/scraper.ts';
 import type { Book } from '../types/models/book.ts';
 import { notionPageToBook } from '../util/mapper-util.ts';
 
-async function fetchBooks(): Promise<Book[]> {
+export async function fetchBooks(): Promise<Book[]> {
 	const response = await queryBookList();
 
 	const results = response.results as PageObjectResponse[];
