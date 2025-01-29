@@ -12,8 +12,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Run docker-compose
-        uses: hoverkraft-tech/compose-action@v2.0.1
+#      - name: Run docker-compose
+#        uses: hoverkraft-tech/compose-action@v2.0.1
+
+      - name: Run docker compose
+        uses: docker compose --build -d
 
       - name: Wait for Server to be Ready
         run: |
@@ -34,3 +37,6 @@ jobs:
 
       - name: Run tests
         run: bun run test
+
+      - name: Shutdown docker container
+        run: docker compose down
