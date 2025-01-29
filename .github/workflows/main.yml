@@ -15,9 +15,6 @@ jobs:
       - name: Setup bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Install dependencies
-        run: bun install
-
       - name: Install Playwright browser
         run: bunx playwright install chromium
 
@@ -32,3 +29,20 @@ jobs:
 
       - name: Shutdown docker container
         run: docker compose down
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: kielabokkie/ssh-key-and-known-hosts-action@v1
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+          ssh-host: ${{ secrets.SSH_HOST }}
+
+      - run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+            cd /opt/bibo-tracker
+            docker compose stop
+            git pull
+            PORT=8001 docker compose up -d
+          "
