@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run docker compose
-        run: docker compose up -d --exit-code-from server
+        run: docker compose up --exit-code-from server
 
       - name: Wait for Server to be Ready
         run: |
