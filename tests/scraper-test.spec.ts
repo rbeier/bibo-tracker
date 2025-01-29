@@ -8,7 +8,7 @@ test.describe('Scraper Test', () => {
 			title: 'Die Mitternachtsbibliothek',
 			author: 'Matt Haig',
 			notionId: 'test',
-			lastChecked: null,
+			isAvailable: false,
 		};
 
 		expect(await checkAvailability(page, book)).toBeDefined();
