@@ -4,8 +4,7 @@
 		"start": "bun src/index.ts",
 		"check-books": "bun src/index.ts --checkBooks",
 		"format": "biome format",
-		"lint": "biome lint",
-		"prestart": "echo 'foo'"
+		"lint": "biome lint"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

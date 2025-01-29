@@ -13,15 +13,11 @@ if (args.checkBooks) {
 }
 
 // scheduler
-console.log('Starting cron mode');
 scheduleCommand('0 10 * * 1-6', checkBooks);
 scheduleCommand('0 16 * * 1-6', checkBooks);
 
 // web interface
 serve({
-	port: process.env.WEBSERVER_PORT,
 	fetch: handleRequests,
 	development: true,
 });
-
-console.log(`Webserver is listening on ${process.env.WEBSERVER_PORT}`);
