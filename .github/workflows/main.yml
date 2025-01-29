@@ -22,7 +22,7 @@ jobs:
         run: bunx playwright install chromium
 
       - name: Run docker compose
-        run: docker compose up --exit-code-from server
+        run: docker compose up -d
 
       - name: debug
         run: docker ps -a
