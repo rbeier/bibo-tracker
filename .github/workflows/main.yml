@@ -2,7 +2,7 @@ name: Build and Deploy
 
 on:
   push:
-    branches: ["master"]
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -20,11 +20,14 @@ jobs:
           echo "Waiting for server..."
           sleep 20
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
 
-      - name: Run Playwright E2E Tests
-        run: npx playwright test
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run tests
+        run: bun run test
 
       - name: Shutdown Docker Containers
         run: docker-compose down
