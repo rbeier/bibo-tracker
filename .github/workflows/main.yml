@@ -28,6 +28,3 @@ jobs:
 
       - name: Run tests
         run: bun run test
-
-      - name: Shutdown Docker Containers
-        run: docker-compose down
