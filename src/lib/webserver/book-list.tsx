@@ -8,7 +8,7 @@ export function BookList({ books }: BookListProps) {
 	return (
 		<div className="list-container">
 			{books.map((book) => (
-				<article key={book.notionId} className={`${book.isAvailable ? 'available' : 'unavailable'}`}>
+				<article key={book.notionId} className={`book ${book.isAvailable ? 'available' : 'unavailable'}`}>
 					<h4>{book.title}</h4>
 					<p className="author">{book.author}</p>
 				</article>
