@@ -13,6 +13,7 @@ export function BookList({ books }: BookListProps) {
 					<p className="author">{book.author}</p>
 				</article>
 			))}
+			{books.length === 0 && <p>No books found.</p>}
 		</div>
 	);
 }

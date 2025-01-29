@@ -5,10 +5,14 @@ import type { Book } from '../types/models/book.ts';
 import { notionPageToBook } from '../util/mapper-util.ts';
 
 export async function fetchBooks(): Promise<Book[]> {
-	const response = await queryBookList();
+	try {
+		const response = await queryBookList();
 
-	const results = response.results as PageObjectResponse[];
-	return results.map(notionPageToBook);
+		const results = response.results as PageObjectResponse[];
+		return results.map(notionPageToBook);
+	} catch (_e) {
+		return [];
+	}
 }
 
 export async function checkBooks() {
