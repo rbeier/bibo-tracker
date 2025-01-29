@@ -12,14 +12,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Run docker compose
-        run: docker compose up --exit-code-from server
-
-      - name: Wait for Server to be Ready
-        run: |
-          echo "Waiting for server..."
-          sleep 10
-
       - name: Setup bun
         uses: oven-sh/setup-bun@v2
 
@@ -28,6 +20,9 @@ jobs:
 
       - name: Install Playwright browser
         run: bunx playwright install chromium
+
+      - name: Run docker compose
+        run: docker compose up --exit-code-from server
 
       - name: debug
         run: docker ps -a
