@@ -1,20 +1,22 @@
 import type { Book } from '../../types/models/book.ts';
 import { AppHeader } from './app-header.tsx';
 import { BookList } from './book-list.tsx';
+import { Status } from './status.tsx';
 
 const styles = await Bun.file('src/lib/webserver/app.css').text();
 
 interface AppProps {
 	books: Book[];
+	lastChecked?: Date | null;
 }
 
-export default function App({ books }: AppProps) {
+export default function App({ books, lastChecked }: AppProps) {
 	return (
 		<html lang="de" data-theme="dark">
 			<head lang="de">
 				<meta charSet="UTF-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-				<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.jade.min.css" />
+				<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
 				<title>Bibo Tracker</title>
 				<style>{styles}</style>
 			</head>
@@ -23,6 +25,7 @@ export default function App({ books }: AppProps) {
 					<AppHeader />
 					<hr />
 					<BookList books={books} />
+					<Status lastChecked={lastChecked} />
 				</div>
 			</body>
 		</html>

@@ -2,6 +2,7 @@
 	"name": "bibo-tracker",
 	"scripts": {
 		"start": "bun src/index.ts",
+		"dev": "bun src/index.ts",
 		"check-books": "bun src/index.ts --checkBooks",
 		"format": "biome format",
 		"lint": "biome lint",
@@ -10,6 +11,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@types/bun": "1.2.0",
+		"@types/luxon": "^3.4.2",
 		"@types/react": "^19.0.8",
 		"@types/react-dom": "^19.0.3"
 	},
@@ -21,6 +23,7 @@
 		"@picocss/pico": "^2.0.6",
 		"@playwright/test": "^1.50.0",
 		"cron": "^3.5.0",
+		"luxon": "^3.5.0",
 		"playwright": "^1.50.0",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"

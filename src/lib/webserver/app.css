@@ -1,27 +1,9 @@
 :root {
 	/* copied from https://picocss.com/docs/colors */
-	--pico-color-jade-950: #04140c;
-	--pico-color-jade-900: #052014;
-	--pico-color-jade-850: #042c1b;
-	--pico-color-jade-800: #033823;
-	--pico-color-jade-750: #00452b;
-	--pico-color-jade-700: #015234;
-	--pico-color-jade-650: #005f3d;
-	--pico-color-jade-600: #006d46;
-	--pico-color-jade-550: #007a50;
-	--pico-color-jade-500: #00895a;
-	--pico-color-jade-450: #029764;
-	--pico-color-jade-400: #00a66e;
-	--pico-color-jade-350: #00b478;
-	--pico-color-jade-300: #00c482;
-	--pico-color-jade-250: #00cc88;
-	--pico-color-jade-200: #21e299;
-	--pico-color-jade-150: #39f1a6;
-	--pico-color-jade-100: #70fcba;
-	--pico-color-jade-50: #cbfce1;
 	--pico-color-jade: #007a50;
-
+	--pico-color-jade-700: #015234;
 	--pico-color-red-700: #861d13;
+	--pico-color-grey-500: #777777;
 
 	/* https://github.com/system-fonts/modern-font-stacks */
 	--heading-font: Rockwell, "Rockwell Nova", "Roboto Slab", "DejaVu Serif", "Sitka Small", serif;
@@ -75,4 +57,16 @@ h1.title {
 	margin: 0;
 	font-size: smaller;
 	font-style: italic;
+}
+
+.last-checked {
+	font-style: italic;
+	color: var(--pico-color-grey-500);
+}
+
+.status {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	margin-bottom: 1rem;
 }

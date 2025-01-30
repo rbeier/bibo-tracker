@@ -8,6 +8,11 @@ export async function launchBrowser() {
 }
 
 export async function checkAvailability(page: Page, book: Book) {
+	// we should not stress the bibo website in development
+	if (process.env?.ENVIRONMENT === 'development') {
+		return Promise.resolve(Math.random() < 0.5);
+	}
+
 	await page.goto('https://katalog.halle.de/Mediensuche');
 	await expect(page.getByRole('heading', { name: 'Suche' })).toBeVisible();
 
@@ -22,9 +27,7 @@ export async function checkAvailability(page: Page, book: Book) {
 
 	expect(page.url()).toContain('searchhash');
 
-	const searchResults = page
-		.getByRole('heading')
-		.filter({ hasText: new RegExp(`^${book.title}$`) });
+	const searchResults = page.getByRole('heading').filter({ hasText: new RegExp(`^${book.title}$`) });
 
 	for (const result of await searchResults.all()) {
 		if (await getBookStatus(page, result)) {
