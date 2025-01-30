@@ -1,11 +1,14 @@
 # Use the Bun image as the base image
-FROM oven/bun:1.2-alpine
+FROM mcr.microsoft.com/playwright:v1.50.0-jammy
 
 # Set the working directory in the container
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-COPY .. .
+COPY . .
+
+# Install bun
+RUN npm install -g bun
 
 # Install dependencies
 RUN bun install --frozen-lockfile
