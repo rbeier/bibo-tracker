@@ -1,6 +1,6 @@
 import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { queryBookList, updateBookStatus } from '../lib/notion/notion-connector.ts';
-import { checkAvailability, launchBrowser } from '../lib/scraper/scraper.ts';
+import { getBookInformation, launchBrowser } from '../lib/scraper/scraper.ts';
 import { Store } from '../lib/store/store.ts';
 import type { Book } from '../types/models/book.ts';
 import { notionPageToBook } from '../util/mapper-util.ts';
@@ -17,16 +17,17 @@ export async function fetchBooks(): Promise<Book[]> {
 }
 
 export async function checkBooks() {
+	console.log('Checking books...');
 	const books = await fetchBooks();
 
 	const context = await launchBrowser();
 	const page = await context.newPage();
 
 	for (const book of books) {
-		const isAvailable = await checkAvailability(page, book);
-		console.log(`Book ${book.title} is available: ${isAvailable}`);
+		const bookInformation = await getBookInformation(page, book);
+		console.log(`Book ${book.title} is ${bookInformation.isAvailable ? 'available' : 'not available'}`);
 
-		await updateBookStatus(book, isAvailable);
+		await updateBookStatus(book, bookInformation);
 	}
 
 	await context.close();

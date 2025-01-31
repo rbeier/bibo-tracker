@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { checkAvailability } from '../src/lib/scraper/scraper.ts';
+import { getBookInformation } from '../src/lib/scraper/scraper.ts';
 import type { Book } from '../src/types/models/book.ts';
 
 test.describe('Scraper Test', () => {
@@ -11,6 +11,10 @@ test.describe('Scraper Test', () => {
 			isAvailable: false,
 		};
 
-		expect(await checkAvailability(page, book)).toBeDefined();
+		const bookInformation = await getBookInformation(page, book);
+
+		expect(bookInformation).toBeDefined();
+		expect(bookInformation.isAvailable).toEqual(expect.any(Boolean));
+		expect(bookInformation.location).not.toBeNull();
 	});
 });

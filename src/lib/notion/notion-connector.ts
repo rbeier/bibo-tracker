@@ -1,5 +1,9 @@
+// noinspection JSNonASCIINames,NonAsciiCharacters
+
 import { Client } from '@notionhq/client';
 import type { Book } from '../../types/models/book.ts';
+import type { ScraperResult } from '../../types/models/scraper-result.ts';
+import type { PageProperties } from '../../types/notion/page-properties.ts';
 import queryFilter from './query-filter.ts';
 
 export function notionClient() {
@@ -13,14 +17,35 @@ export function queryBookList() {
 	});
 }
 
-export async function updateBookStatus(book: Book, isAvailable: boolean) {
-	// noinspection JSNonASCIINames,NonAsciiCharacters
+export async function updateBookStatus(book: Book, bookInformation: ScraperResult) {
+	const properties: PageProperties = {
+		Verfügbar: {
+			checkbox: bookInformation.isAvailable,
+		},
+	};
+
+	if (bookInformation.returnDate?.isValid) {
+		properties.Rückgabedatum = {
+			date: {
+				start: bookInformation.returnDate.toISODate() as string,
+			},
+		};
+	}
+
+	if (bookInformation.location) {
+		properties.Standort = {
+			rich_text: [
+				{
+					text: {
+						content: bookInformation.location,
+					},
+				},
+			],
+		};
+	}
+
 	return notionClient().pages.update({
 		page_id: book.notionId,
-		properties: {
-			Verfügbar: {
-				checkbox: isAvailable,
-			},
-		},
+		properties,
 	});
 }

@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { checkAvailability } from '../src/lib/scraper/scraper.ts';
+import { getBookInformation } from '../src/lib/scraper/scraper.ts';
 import type { Book } from '../src/types/models/book.ts';
 
 test.describe('Application', () => {
