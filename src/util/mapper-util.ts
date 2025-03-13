@@ -10,6 +10,7 @@ export function notionPageToBook(page: PageObjectResponse): Book {
 		author: getRichTextPropertyValue(page.properties.Autor as RichTextProperty),
 		title: getTitlePropertyValue(page.properties.Titel as TitleProperty),
 		isAvailable: getCheckboxPropertyValue(page.properties.Verfügbar as CheckboxProperty),
+		location: getRichTextPropertyValue(page.properties.Standort as RichTextProperty),
 	};
 }
 

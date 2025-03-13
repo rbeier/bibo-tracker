@@ -3,4 +3,5 @@ export type Book = {
 	author: string;
 	notionId: string;
 	isAvailable: boolean;
+	location: string;
 };

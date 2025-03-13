@@ -2,7 +2,10 @@
 	/* copied from https://picocss.com/docs/colors */
 	--pico-color-jade: #007a50;
 	--pico-color-jade-700: #015234;
+	--pico-color-jade-600: #006d46;
+
 	--pico-color-red-700: #861d13;
+	--pico-color-red-600: #af291d;
 	--pico-color-grey-500: #777777;
 
 	/* https://github.com/system-fonts/modern-font-stacks */
@@ -19,11 +22,9 @@ h1.title {
 }
 
 .app-icon {
-	transform: scale(1.8);
-	margin-left: 1.4rem;
+	display: inline-block;
+	margin-left: 0.7rem;
 	stroke-width: 0.1rem;
-	position: relative;
-	bottom: -0.1rem;
 }
 
 .list-container {
@@ -34,29 +35,45 @@ h1.title {
 
 	/* on mobile */
 	@media (max-width: 767px) {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(300px, 1fr);
 	}
 }
 
 .book {
-	display: flex;
-	flex-wrap: wrap;
+	position: relative;
 }
 
-.book.available {
-	background: var(--pico-color-jade-700);
+.book-title {
+	display: block;
+	font-size: 1.2rem;
+	font-weight: 500;
+	margin-bottom: 0.2rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
-.book.unavailable {
-	background: var(--pico-color-red-700);
+.book-meta-info {
+	color: var(--pico-color-grey-500);
 }
 
-.author {
-	width: 100%;
-	align-self: flex-end;
-	margin: 0;
-	font-size: smaller;
-	font-style: italic;
+.book-status {
+	width: 0.6rem;
+	height: 0.6rem;
+	border-radius: 100%;
+	display: inline-block;
+	margin-right: 0.5rem;
+	position: relative;
+	top: 0.5rem;
+	flex-shrink: 0;
+}
+
+.book-status.available {
+	background: var(--pico-color-jade-600);
+}
+
+.book-status.unavailable {
+	background: var(--pico-color-red-600);
 }
 
 .last-checked {
