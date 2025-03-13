@@ -23,7 +23,4 @@ if (process.env?.ENVIRONMENT === 'development') {
 }
 
 // web interface
-serve({
-	fetch: handleRequests,
-	development: true,
-});
+serve({ fetch: handleRequests, port: 3000 });
