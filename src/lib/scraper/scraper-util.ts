@@ -29,8 +29,14 @@ export class ScraperUtil {
 	}
 
 	async getBookLocation(): Promise<string> {
+		let interessenkreis = '';
 		const systematik = await this.page.getByText('Systematik: Suche').locator('a').first().innerText();
-		const interessenkreis = await this.page.getByText('Interessenkreis: Suche').locator('a').first().innerText();
+
+		try {
+			interessenkreis = await this.page.getByText('Interessenkreis: Suche').locator('a').first().innerText();
+		} catch (e) {
+			return systematik;
+		}
 
 		return `${systematik} ${interessenkreis}`.trim();
 	}
