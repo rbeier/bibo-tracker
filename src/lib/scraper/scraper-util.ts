@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon';
 import type { Locator, Page } from 'playwright';
 import type { Book } from '../../types/models/book.ts';
 import type { ScraperResult } from '../../types/models/scraper-result.ts';
@@ -47,13 +46,5 @@ export function newScraperResult(): ScraperResult {
 		isAvailable: false,
 		location: null,
 		returnDate: null,
-	};
-}
-
-export function developmentScraperResult(): ScraperResult {
-	return {
-		isAvailable: Math.random() > 0.5,
-		location: 'R 11',
-		returnDate: DateTime.now(),
 	};
 }

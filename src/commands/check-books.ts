@@ -4,6 +4,7 @@ import { getBookInformation, launchBrowser } from '../lib/scraper/scraper.ts';
 import { Store } from '../lib/store/store.ts';
 import type { Book } from '../types/models/book.ts';
 import { notionPageToBook } from '../util/mapper-util.ts';
+import { developmentScraperResult } from '../lib/scraper/scraper-util.ts';
 
 export async function fetchBooks(): Promise<Book[]> {
 	try {
@@ -25,10 +26,12 @@ export async function checkBooks() {
 
 	for (const book of books) {
 		const bookInformation = await getBookInformation(page, book);
-		console.log(`Book ${book.title} is ${bookInformation.isAvailable ? 'available' : 'not available'}`);
+		console.log(`Book "${book.title}" is ${bookInformation.isAvailable ? 'available' : 'not available'}`);
 
 		await updateBookStatus(book, bookInformation);
 	}
+
+	console.log('Finished checking books');
 
 	await context.close();
 	Store.updateLastChecked();

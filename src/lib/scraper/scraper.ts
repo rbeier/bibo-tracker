@@ -3,7 +3,7 @@ import { DateTime } from 'luxon';
 import { type Locator, type Page, chromium } from 'playwright';
 import type { Book } from '../../types/models/book.ts';
 import type { ScraperResult } from '../../types/models/scraper-result.ts';
-import { ScraperUtil, developmentScraperResult, newScraperResult } from './scraper-util.ts';
+import { ScraperUtil, newScraperResult } from './scraper-util.ts';
 
 let scraperUtil: ScraperUtil;
 
@@ -17,11 +17,6 @@ export async function getBookInformation(page: Page, book: Book): Promise<Scrape
 
 	const returnDates: DateTime[] = [];
 	let bookData = newScraperResult();
-
-	// we should not stress the bibo website in development
-	if (process.env?.ENVIRONMENT === 'development') {
-		return Promise.resolve(developmentScraperResult());
-	}
 
 	await page.goto('https://katalog.halle.de/Mediensuche');
 	await expect(page.getByRole('heading', { name: 'Suche' })).toBeVisible();

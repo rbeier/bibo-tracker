@@ -17,10 +17,5 @@ if (args.checkBooks) {
 scheduleCommand('0 10 * * 1-6', checkBooks);
 scheduleCommand('0 16 * * 1-6', checkBooks);
 
-// run once in development
-if (process.env?.ENVIRONMENT === 'development') {
-	scheduleCommand(DateTime.now().plus(500).toJSDate(), checkBooks);
-}
-
 // web interface
 serve({ fetch: handleRequests, port: 3000 });
