@@ -4,4 +4,5 @@ export type ScraperResult = {
 	isAvailable: boolean;
 	location: string | null;
 	returnDate: DateTime | null;
+	permalink?: string | null;
 };

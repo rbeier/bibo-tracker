@@ -1,5 +1,4 @@
 import { serve } from 'bun';
-import { DateTime } from 'luxon';
 import { checkBooks } from './commands/check-books.ts';
 import { handleRequests } from './lib/webserver/request-handler.tsx';
 import { parseCliArgs } from './util/cli-args.ts';
@@ -19,3 +18,7 @@ scheduleCommand('0 16 * * 1-6', checkBooks);
 
 // web interface
 serve({ fetch: handleRequests, port: 3000 });
+
+if (Bun.env.ENVIRONMENT === 'development') {
+	console.log('Server started on http://localhost:3000');
+}

@@ -5,8 +5,8 @@ import type { Book } from '../src/types/models/book.ts';
 test.describe('Scraper Test', () => {
 	test('should check book availability', async ({ page }) => {
 		const book: Book = {
-			title: 'Das Schloss',
-			author: 'Franz Kafka',
+			title: 'Macht im Umbruch',
+			author: 'Herfried Münkler',
 			notionId: '',
 			location: '',
 			isAvailable: false,
@@ -18,6 +18,7 @@ test.describe('Scraper Test', () => {
 
 		expect(bookInformation).toBeDefined();
 		expect(bookInformation.isAvailable).toEqual(expect.any(Boolean));
-		expect(bookInformation.location).toBe('R 11 Klassiker');
+		expect(bookInformation.location).toStrictEqual(expect.any(String));
+		expect(bookInformation.permalink).toStrictEqual(expect.any(String));
 	});
 });

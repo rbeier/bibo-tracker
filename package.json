@@ -2,7 +2,7 @@
 	"name": "bibo-tracker",
 	"scripts": {
 		"start": "bun src/index.ts",
-		"dev": "bun src/index.ts",
+		"dev": "bun --watch src/index.ts",
 		"check-books": "bun src/index.ts --checkBooks",
 		"format": "biome format",
 		"lint": "biome lint",

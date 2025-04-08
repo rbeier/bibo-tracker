@@ -10,10 +10,17 @@ export function BookList({ books }: BookListProps) {
 			{books.map((book) => (
 				<div key={book.notionId}>
 					<div className="book">
-						<strong className="book-title">{book.title}</strong>
+						{book.permalink ? (
+							<a href={book.permalink} className="book-title">
+								{book.title}
+							</a>
+						) : (
+							<span className="book-title">{book.title}</span>
+						)}
+
 						<span className={`book-status ${book.isAvailable ? 'available' : 'unavailable'}`}>&nbsp;</span>
 						<span className="book-meta-info">
-							{book.location} - {book.author}
+							{book.location} {book.location ? '-' : ''} {book.author}
 						</span>
 					</div>
 					<hr />

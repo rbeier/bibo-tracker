@@ -62,6 +62,7 @@ async function extractData(page: Page, result: Locator): Promise<ScraperResult> 
 
 	for (const row of await scraperUtil.getTableRows()) {
 		bookData = await parseDataFromRow(row);
+		bookData.permalink = await getPermalink(page);
 
 		if (bookData.isAvailable) {
 			return bookData;
@@ -89,4 +90,19 @@ async function parseDataFromRow(row: Locator): Promise<ScraperResult> {
 		isAvailable: status ? new RegExp(/Verfügbar|Heute zurückgegeben|In Einarbeitung/).test(status) : false,
 		returnDate: returnDate ? DateTime.fromFormat(returnDate, 'dd.MM.yyyy', { locale: 'de' }) : null,
 	};
+}
+
+async function getPermalink(page: Page): Promise<string> {
+	try {
+		const link = page.getByRole('link', { name: 'Permalink Detailanzeige', exact: false });
+		await link.click();
+		await expect(page.locator('#dnn_ctr513_MainView_popupPermalinkDetail_lblHeader')).toBeVisible();
+
+		const permalink = await page.locator('#dnn_ctr513_MainView_popupPermalinkDetail_TxtPermaLinkDetail').inputValue();
+		await page.getByRole('button', { name: 'OK' }).click();
+
+		return permalink;
+	} catch (e) {
+		return '';
+	}
 }

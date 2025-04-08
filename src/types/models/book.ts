@@ -4,4 +4,5 @@ export type Book = {
 	notionId: string;
 	isAvailable: boolean;
 	location: string;
+	permalink: string | null;
 };

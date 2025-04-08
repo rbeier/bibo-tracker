@@ -29,12 +29,13 @@ export class ScraperUtil {
 
 	async getBookLocation(): Promise<string> {
 		let interessenkreis = '';
-		const systematik = await this.page.getByText('Systematik: Suche').locator('a').first().innerText();
+		let systematik = '';
 
 		try {
+			systematik = await this.page.getByText('Systematik: Suche').locator('a').first().innerText();
 			interessenkreis = await this.page.getByText('Interessenkreis: Suche').locator('a').first().innerText();
 		} catch (e) {
-			return systematik;
+			return '';
 		}
 
 		return `${systematik} ${interessenkreis}`.trim();
@@ -46,5 +47,6 @@ export function newScraperResult(): ScraperResult {
 		isAvailable: false,
 		location: null,
 		returnDate: null,
+		permalink: null,
 	};
 }

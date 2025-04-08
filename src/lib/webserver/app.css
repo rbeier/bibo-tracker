@@ -7,6 +7,7 @@
 	--pico-color-red-700: #861d13;
 	--pico-color-red-600: #af291d;
 	--pico-color-grey-500: #777777;
+	--pico-color-grey-100: #e2e2e2;
 
 	/* https://github.com/system-fonts/modern-font-stacks */
 	--heading-font: Rockwell, "Rockwell Nova", "Roboto Slab", "DejaVu Serif", "Sitka Small", serif;
@@ -45,6 +46,9 @@ h1.title {
 }
 
 .book-title {
+	color: white;
+	text-decoration-color: var(--pico-color-grey-100);
+	text-decoration-thickness: 1px;
 	display: block;
 	font-size: 1.2rem;
 	font-weight: 500;

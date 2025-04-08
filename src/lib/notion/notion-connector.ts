@@ -44,6 +44,12 @@ export async function updateBookStatus(book: Book, bookInformation: ScraperResul
 		};
 	}
 
+	if (bookInformation.permalink) {
+		properties.Link = {
+			url: bookInformation.permalink,
+		};
+	}
+
 	return notionClient().pages.update({
 		page_id: book.notionId,
 		properties,

@@ -3,6 +3,7 @@ import type { Book } from '../types/models/book.ts';
 import type { CheckboxProperty } from '../types/notion/checkbox-property.ts';
 import type { RichTextProperty } from '../types/notion/rich-text-property.ts';
 import type { TitleProperty } from '../types/notion/title-property.ts';
+import type { UrlProperty } from '../types/notion/url-property.ts';
 
 export function notionPageToBook(page: PageObjectResponse): Book {
 	return {
@@ -11,6 +12,7 @@ export function notionPageToBook(page: PageObjectResponse): Book {
 		title: getTitlePropertyValue(page.properties.Titel as TitleProperty),
 		isAvailable: getCheckboxPropertyValue(page.properties.Verfügbar as CheckboxProperty),
 		location: getRichTextPropertyValue(page.properties.Standort as RichTextProperty),
+		permalink: getUrlPropertyValue(page.properties.Link as UrlProperty),
 	};
 }
 
@@ -24,4 +26,8 @@ export function getTitlePropertyValue(property: TitleProperty) {
 
 export function getCheckboxPropertyValue(property: CheckboxProperty) {
 	return property.checkbox;
+}
+
+export function getUrlPropertyValue(property: UrlProperty) {
+	return property.url;
 }
