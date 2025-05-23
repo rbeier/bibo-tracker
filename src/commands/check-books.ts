@@ -4,6 +4,7 @@ import { getBookInformation, launchBrowser } from '../lib/scraper/scraper.ts';
 import { Store } from '../lib/store/store.ts';
 import type { Book } from '../types/models/book.ts';
 import { notionPageToBook } from '../util/mapper-util.ts';
+import { sendNotificationIfBookAvailable } from '../lib/notification/notification.ts';
 
 export async function fetchBooks(): Promise<Book[]> {
 	try {
@@ -27,6 +28,7 @@ export async function checkBooks() {
 		const bookInformation = await getBookInformation(page, book);
 		console.log(`Book "${book.title}" is ${bookInformation.isAvailable ? 'available' : 'not available'}`);
 
+		await sendNotificationIfBookAvailable(book, bookInformation);
 		await updateBookStatus(book, bookInformation);
 	}
 

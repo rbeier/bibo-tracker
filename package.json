@@ -11,21 +11,21 @@
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@types/bun": "1.2.0",
-		"@types/luxon": "^3.4.2",
-		"@types/react": "^19.0.8",
-		"@types/react-dom": "^19.0.3"
+		"@types/luxon": "^3.6.2",
+		"@types/react": "^19.1.5",
+		"@types/react-dom": "^19.1.5"
 	},
 	"peerDependencies": {
 		"typescript": "^5.7.3"
 	},
 	"dependencies": {
-		"@notionhq/client": "^2.2.15",
-		"@picocss/pico": "^2.0.6",
-		"@playwright/test": "^1.50.0",
+		"@notionhq/client": "^2.3.0",
+		"@picocss/pico": "^2.1.1",
+		"@playwright/test": "^1.52.0",
 		"cron": "^3.5.0",
-		"luxon": "^3.5.0",
-		"playwright": "^1.50.0",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"luxon": "^3.6.1",
+		"playwright": "^1.52.0",
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0"
 	}
 }

@@ -1,5 +1,5 @@
 # Use the Bun image as the base image
-FROM mcr.microsoft.com/playwright:v1.50.0-jammy
+FROM mcr.microsoft.com/playwright:v1.52.0-jammy
 
 # Set the working directory in the container
 WORKDIR /app

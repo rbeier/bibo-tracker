@@ -26,8 +26,15 @@ export async function getBookInformation(page: Page, book: Book): Promise<Scrape
 	expect(page.url()).toContain('searchhash');
 
 	const searchResults = await page
-		.getByRole('heading')
-		.filter({ hasText: new RegExp(`^${book.title.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&')}$`) })
+		.locator('[id$="_divMedium"]')
+		.filter({
+			has: page
+				.getByRole('heading')
+				.filter({ hasText: new RegExp(`^${book.title.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&')}$`) }),
+		})
+		.filter({
+			has: page.locator('.itemtype.book'),
+		})
 		.all();
 
 	expect(searchResults.length).toBeGreaterThanOrEqual(1);
@@ -87,7 +94,7 @@ async function parseDataFromRow(row: Locator): Promise<ScraperResult> {
 
 	return {
 		location: await scraperUtil.getBookLocation(),
-		isAvailable: status ? new RegExp(/Verfügbar|Heute zurückgegeben|In Einarbeitung/).test(status) : false,
+		isAvailable: status ? new RegExp(/Verfügbar|Heute zurückgegeben/).test(status) : false,
 		returnDate: returnDate ? DateTime.fromFormat(returnDate, 'dd.MM.yyyy', { locale: 'de' }) : null,
 	};
 }

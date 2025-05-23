@@ -5,11 +5,12 @@ import type { Book } from '../src/types/models/book.ts';
 test.describe('Scraper Test', () => {
 	test('should check book availability', async ({ page }) => {
 		const book: Book = {
-			title: 'Macht im Umbruch',
-			author: 'Herfried Münkler',
+			title: 'Holly',
+			author: 'Stephen King',
 			notionId: '',
 			location: '',
 			isAvailable: false,
+			permalink: '',
 		};
 
 		const bookInformation = await getBookInformation(page, book);
