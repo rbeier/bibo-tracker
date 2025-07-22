@@ -1,10 +1,11 @@
-import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { queryBookList, updateBookStatus } from '../lib/notion/notion-connector.ts';
-import { getBookInformation, launchBrowser } from '../lib/scraper/scraper.ts';
-import { Store } from '../lib/store/store.ts';
-import type { Book } from '../types/models/book.ts';
-import { notionPageToBook } from '../util/mapper-util.ts';
-import { sendNotificationIfBookAvailable } from '../lib/notification/notification.ts';
+import type {PageObjectResponse} from '@notionhq/client/build/src/api-endpoints';
+import {queryBookList, updateBookStatus} from '../lib/notion/notion-connector.ts';
+import {getBookInformation, launchBrowser} from '../lib/scraper/scraper.ts';
+import {Store} from '../lib/store/store.ts';
+import type {Book} from '../types/models/book.ts';
+import {notionPageToBook} from '../util/mapper-util.ts';
+import {sendNotificationIfBookAvailable} from '../lib/notification/notification.ts';
+import type {ScraperResult} from "../types/models/scraper-result.ts";
 
 export async function fetchBooks(): Promise<Book[]> {
 	try {
@@ -18,22 +19,31 @@ export async function fetchBooks(): Promise<Book[]> {
 }
 
 export async function checkBooks() {
-	console.log('Checking books...');
-	const books = await fetchBooks();
+    console.log('Checking books...');
+    const books = await fetchBooks();
 
-	const context = await launchBrowser();
-	const page = await context.newPage();
+    const context = await launchBrowser();
+    const page = await context.newPage();
 
-	for (const book of books) {
-		const bookInformation = await getBookInformation(page, book);
-		console.log(`Book "${book.title}" is ${bookInformation.isAvailable ? 'available' : 'not available'}`);
+    for (const book of books) {
+        let bookInformation: ScraperResult | undefined;
+        console.log('Checking book:', book.title);
 
-		await sendNotificationIfBookAvailable(book, bookInformation);
-		await updateBookStatus(book, bookInformation);
-	}
+        try {
+            bookInformation = await getBookInformation(page, book);
+            console.log(`Book "${book.title}" is ${bookInformation.isAvailable ? 'available' : 'not available'}`);
+        } catch (error) {
+            console.error(`Error getting book information "${book.title}":`, error);
+        }
 
-	console.log('Finished checking books');
+		if (bookInformation) {
+            await sendNotificationIfBookAvailable(book, bookInformation);
+            await updateBookStatus(book, bookInformation);
+        }
+    }
 
-	await context.close();
-	Store.updateLastChecked();
+    console.log('Finished checking books');
+
+    await context.close();
+    Store.updateLastChecked();
 }

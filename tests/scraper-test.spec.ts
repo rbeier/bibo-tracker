@@ -5,8 +5,8 @@ import type { Book } from '../src/types/models/book.ts';
 test.describe('Scraper Test', () => {
 	test('should check book availability', async ({ page }) => {
 		const book: Book = {
-			title: 'Holly',
-			author: 'Stephen King',
+			title: 'Deutschland schafft sich ab die Bilanz nach 15 Jahren',
+			author: 'Thilo Sarrazin',
 			notionId: '',
 			location: '',
 			isAvailable: false,
