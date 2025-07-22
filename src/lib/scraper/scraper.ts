@@ -37,7 +37,7 @@ export async function getBookInformation(page: Page, book: Book): Promise<Scrape
 		})
 		.all();
 
-	expect(searchResults.length).toBeGreaterThanOrEqual(1);
+	expect.soft(searchResults.length).toBeGreaterThanOrEqual(1);
 
 	for (const result of searchResults) {
 		bookData = await extractData(page, result);
