@@ -6,7 +6,7 @@ import type { ScraperResult } from '../src/types/models/scraper-result.ts';
 test.describe('Application', () => {
 	test('webserver test', async ({ page }) => {
 		await page.goto('http://localhost:3000');
-		await expect(page.getByRole('heading', { name: 'bibo.tracker' })).toBeVisible();
+		await expect(page.getByText('bibowatch')).toBeVisible();
 	});
 
 	// skip test in CI to not send a notification every time
