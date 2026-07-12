@@ -21,13 +21,18 @@ export default function App({ books, lastChecked }: AppProps) {
 				/>
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 				<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
-				<title>Bibo Tracker</title>
+				<link rel="preconnect" href="https://fonts.googleapis.com" />
+				<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+				<link
+					href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Mono:wght@500&display=swap"
+					rel="stylesheet"
+				/>
+				<title>bibowatch</title>
 				<style>{styles}</style>
 			</head>
 			<body>
 				<div className="container">
-					<AppHeader />
-					<hr />
+					<AppHeader books={books} />
 					<BookList books={books} />
 					<Status lastChecked={lastChecked} />
 				</div>

@@ -1,98 +1,231 @@
 :root {
-	/* copied from https://picocss.com/docs/colors */
-	--pico-color-jade: #007a50;
-	--pico-color-jade-700: #015234;
-	--pico-color-jade-600: #006d46;
+	/* surfaces */
+	--bg: #14130f;
+	--surface: #1d1c17;
+	/* text */
+	--ink: #ece7dd;
+	--ink-muted: #b4afa4;
+	--ink-soft: #8b8578;
+	--ink-faint: #6a6559;
+	--border: rgba(255, 255, 255, 0.06);
+	/* brand accent — periwinkle violet */
+	--accent: #9e90ec;
+	--accent-tint: rgba(158, 144, 236, 0.12);
+	--accent-tag: #b0a6ee;
+	/* availability */
+	--available: #7fb98a;
+	--borrowed: #c97a6d;
+	/* type */
+	--heading-font: "Newsreader", Georgia, "Times New Roman", serif;
+	--mono-font: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+}
 
-	--pico-color-red-700: #861d13;
-	--pico-color-red-600: #af291d;
-	--pico-color-grey-500: #777777;
-	--pico-color-grey-100: #e2e2e2;
+/* let our palette drive Pico */
+:root,
+[data-theme="dark"] {
+	--pico-background-color: var(--bg);
+	--pico-color: var(--ink);
+	--pico-muted-color: var(--ink-soft);
+	--pico-h1-color: var(--accent);
+}
 
-	/* https://github.com/system-fonts/modern-font-stacks */
-	--heading-font: Rockwell, "Rockwell Nova", "Roboto Slab", "DejaVu Serif", "Sitka Small", serif;
+body {
+	background: var(--bg);
+	color: var(--ink);
+	font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+.container {
+	max-width: 900px;
+	padding-top: 1.5rem;
+	padding-bottom: 3rem;
+}
+
+/* ---------- header ---------- */
+.app-header {
+	margin: 1rem 0 1.75rem;
 }
 
 h1.title {
-	margin: 2rem 0 1rem 0;
-	text-align: center;
-	color: var(--pico-color-jade);
-	font-family: var(--heading-font), sans-serif;
-	font-weight: 200;
-	font-size: xxx-large;
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	margin: 0;
+	color: var(--accent);
+	font-family: var(--heading-font);
+	font-weight: 500;
+	font-size: clamp(2.2rem, 8vw, 3rem);
+	letter-spacing: -0.02em;
+	line-height: 1;
 }
 
 .app-icon {
-	display: inline-block;
-	margin-left: 0.7rem;
-	stroke-width: 0.1rem;
+	width: 1.9rem;
+	height: 1.9rem;
+	stroke-width: 1.6;
+	color: var(--accent);
+	flex-shrink: 0;
 }
 
+.subtitle {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin: 0.85rem 0 0;
+	font-size: 0.9rem;
+	color: var(--ink-soft);
+}
+
+.count-available {
+	color: var(--available);
+	font-weight: 500;
+}
+
+.count-sep {
+	opacity: 0.4;
+}
+
+/* ---------- list ---------- */
 .list-container {
 	display: grid;
-	flex-wrap: wrap;
 	grid-template-columns: repeat(2, minmax(300px, 1fr));
-	gap: 0.5rem 2rem;
+	column-gap: 2.5rem;
 
-	/* on mobile */
 	@media (max-width: 767px) {
-		grid-template-columns: minmax(300px, 1fr);
-		gap: 0 1rem;
+		grid-template-columns: minmax(0, 1fr);
 	}
 }
 
 .book {
-	position: relative;
+	display: flex;
+	align-items: flex-start;
+	gap: 0.85rem;
+	padding: 0.95rem 0;
+	border-bottom: 1px solid var(--border);
+}
+
+.book-body {
+	flex: 1;
+	min-width: 0;
+}
+
+.book-status {
+	width: 0.5rem;
+	height: 0.5rem;
+	border-radius: 100%;
+	flex-shrink: 0;
+	margin-top: 0.5rem;
+}
+
+.book-status.available {
+	background: var(--available);
+	box-shadow: 0 0 0 4px rgba(127, 185, 138, 0.14);
+}
+
+.book-status.unavailable {
+	background: var(--borrowed);
+	box-shadow: 0 0 0 4px rgba(201, 122, 109, 0.12);
 }
 
 .book-title {
-	color: white;
-	text-decoration-color: var(--pico-color-grey-100);
-	text-decoration-thickness: 1px;
 	display: block;
-	font-size: 1.2rem;
+	font-family: var(--heading-font);
+	font-size: 1.25rem;
 	font-weight: 500;
-	margin-bottom: 0.2rem;
+	line-height: 1.25;
+	letter-spacing: -0.01em;
+	color: var(--ink);
+	margin-bottom: 0.35rem;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
+/* titles WITHOUT a permalink render as <span> — no underline, not clickable */
+span.book-title {
+	text-decoration: none;
+}
+
+/* titles WITH a permalink render as <a> — a resting underline signals they're links */
+a.book-title {
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-decoration-color: rgba(255, 255, 255, 0.2);
+	text-underline-offset: 3px;
+	transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+a.book-title:hover {
+	color: var(--accent);
+	text-decoration-color: var(--accent);
+}
+
+/* borrowed titles read a touch quieter — links included */
+.book:has(.book-status.unavailable) .book-title {
+	color: var(--ink-muted);
+}
+
 .book-meta-info {
-	color: var(--pico-color-grey-500);
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	flex-wrap: wrap;
 }
 
-.book-status {
-	width: 0.6rem;
-	height: 0.6rem;
-	border-radius: 100%;
-	display: inline-block;
-	margin-right: 0.5rem;
-	position: relative;
-	top: 0.4rem;
-	flex-shrink: 0;
+.book-tag {
+	font-family: var(--mono-font);
+	font-size: 0.66rem;
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	color: var(--accent-tag);
+	background: var(--accent-tint);
+	border-radius: 4px;
+	padding: 0.12rem 0.4rem;
 }
 
-.book-status.available {
-	background: var(--pico-color-jade-600);
+.book-meta-text {
+	color: var(--ink-soft);
+	font-size: 0.85rem;
 }
 
-.book-status.unavailable {
-	background: var(--pico-color-red-600);
+/* ---------- status / footer ---------- */
+.status {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-top: 2rem;
 }
 
 .last-checked {
 	font-style: italic;
-	color: var(--pico-color-grey-500);
+	color: var(--ink-faint);
+	font-size: 0.85rem;
 }
 
-.status {
-	display: flex;
-	align-items: flex-start;
-	justify-content: space-between;
-	margin-bottom: 1rem;
-}
-
-.status a {
+.status a#refresh-book-availability {
 	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	background: var(--accent);
+	color: #161520;
+	border-radius: 999px;
+	padding: 0.5rem 1rem;
+	font-size: 0.9rem;
+	font-weight: 600;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: filter 0.15s ease;
+}
+
+.status a#refresh-book-availability:hover {
+	filter: brightness(1.07);
+}
+
+hr {
+	border: none;
+	border-top: 1px solid var(--border);
 }

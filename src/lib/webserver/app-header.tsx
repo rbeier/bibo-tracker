@@ -1,27 +1,27 @@
-export function AppHeader() {
-	return (
-		<div>
-			<h1 className="title">
-				bibo.tracker
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="48"
-					height="48"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					className="app-icon"
-				>
-					<title>App-Icon</title>
-					<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-					<path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
-					<path d="M9 17v1a3 3 0 0 0 6 0v-1" />
-					<path d="M21 6.727a11.05 11.05 0 0 0 -2.794 -3.727" />
-					<path d="M3 6.727a11.05 11.05 0 0 1 2.792 -3.727" />
-				</svg>
-			</h1>
-		</div>
-	);
+import type { Book } from '../../types/models/book.ts';
+
+interface AppHeaderProps {
+  books: Book[];
+}
+
+export function AppHeader({books}: AppHeaderProps) {
+  const available = books.filter((book) => book.isAvailable).length;
+  const borrowed = books.length - available;
+
+  return (
+    <header className="app-header">
+      <h1 className="title">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 274 84" width="274" height="84" role="img" aria-label="bibo watch">
+          <text x="0" y="58" font-family="BiboWatch" font-weight="500" font-style="normal" font-size="60" letter-spacing="-1" fill="#ECE7DD">bibo</text>
+          <text x="106" y="58" font-family="BiboWatch" font-weight="400" font-style="italic" font-size="60" fill="#9E90EC">watch</text>
+        </svg>
+
+      </h1>
+      <p className="subtitle">
+        <span className="count-available">{available} verfügbar</span>
+        <span className="count-sep">·</span>
+        <span>{borrowed} ausgeliehen</span>
+      </p>
+    </header>
+  );
 }

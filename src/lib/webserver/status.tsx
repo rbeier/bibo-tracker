@@ -7,7 +7,7 @@ interface LastCheckedProps {
 export function Status({ lastChecked }: LastCheckedProps) {
 	return (
 		<div className="status">
-			{lastChecked && (
+			{lastChecked ? (
 				<span className="last-checked">
 					Zuletzt aktualisiert&nbsp;
 					{DateTime.fromJSDate(lastChecked).toRelative({
@@ -15,9 +15,11 @@ export function Status({ lastChecked }: LastCheckedProps) {
 					})}
 					.
 				</span>
+			) : (
+				<span />
 			)}
 
-			{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+			{/* biome-ignore lint/a11y/useValidAnchor: refresh handled in scripts.js */}
 			<a id="refresh-book-availability">Aktualisieren</a>
 		</div>
 	);
