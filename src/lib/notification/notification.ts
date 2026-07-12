@@ -3,7 +3,7 @@ import type { ScraperResult } from '../../types/models/scraper-result.ts';
 
 export const sendNotificationIfBookAvailable = async (book: Book, scraperResult: ScraperResult) => {
 	const url = `${Bun.env.NTFY_URL}/${Bun.env.NTFY_TOPIC}`;
-	const token = Bun.env.NTFY_TOKEN;
+	const token = Bun.env.NTFY_API_KEY;
 
 	if (url && token && !book.isAvailable && scraperResult.isAvailable) {
 		return fetch(url, {
