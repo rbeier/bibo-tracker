@@ -20,6 +20,7 @@ export async function fetchBooks(): Promise<Book[]> {
 
 export async function checkBooks() {
     console.log('Checking books...');
+    const startTime = performance.now();
     const books = await fetchBooks();
 
     const context = await launchBrowser();
@@ -44,6 +45,11 @@ export async function checkBooks() {
     }
 
     console.log('Finished checking books');
+
+    const runtimeMs = performance.now() - startTime;
+    const timePerBookMs = books.length > 0 ? runtimeMs / books.length : 0;
+    console.log(`Total runtime: ${(runtimeMs / 1000).toFixed(2)}s for ${books.length} book(s)`);
+    console.log(`Time per book: ${(timePerBookMs / 1000).toFixed(2)}s`);
 
     await context.close();
     Store.updateLastChecked();
