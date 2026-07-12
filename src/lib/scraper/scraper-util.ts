@@ -32,11 +32,20 @@ export class ScraperUtil {
 		let systematik = '';
 
 		try {
-			systematik = await this.page.getByText('Systematik: Suche').locator('a').first().innerText();
-			interessenkreis = await this.page.getByText('Interessenkreis: Suche').locator('a').first().innerText();
-		} catch (e) {
-			return '';
-		}
+			systematik = await this.page
+				.getByText('Systematik:')
+				.locator('xpath=following-sibling::a')
+				.first()
+				.innerText();
+		} catch (e) {}
+
+		try	{
+			interessenkreis = await this.page
+				.getByText('Interessenkreis:')
+				.locator('xpath=following-sibling::a')
+				.first()
+				.innerText();
+		} catch (e) {}
 
 		return `${systematik} ${interessenkreis}`.trim();
 	}

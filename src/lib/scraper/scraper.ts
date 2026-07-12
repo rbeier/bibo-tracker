@@ -30,7 +30,7 @@ export async function getBookInformation(page: Page, book: Book): Promise<Scrape
 		.filter({
 			has: page
 				.getByRole('heading')
-				.filter({ hasText: new RegExp(`^${book.title.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&')}$`) }),
+				.filter({ hasText: new RegExp(`^${book.title.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&')}$`, 'i') }),
 		})
 		.filter({
 			has: page.locator('.itemtype.book'),
