@@ -112,13 +112,14 @@ describe('HTTP Request Handler & Sync API', () => {
 		expect(getBody.books).toHaveLength(2);
 		expect(getBody.books[1].returnDate).toBe('2026-12-01');
 
-		// GET / renders SSR HTML containing synced books and formatted return date
+		// GET / renders SSR HTML containing synced books, formatted return date, and lastSynced timestamp
 		const uiRes = await handleRequests(new Request('http://localhost:3000/'));
 		expect(uiRes.status).toBe(200);
 		const html = await uiRes.text();
 		expect(html).toContain('Holly');
 		expect(html).toContain('Der Schwarm');
 		expect(html).toContain('bis 01.12.2026');
+		expect(html).toContain('Zuletzt synchronisiert');
 
 		// Empty snapshot without allowEmpty returns 409 Conflict
 		const emptyConflictRes = await handleRequests(

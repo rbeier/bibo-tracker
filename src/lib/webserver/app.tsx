@@ -8,9 +8,10 @@ const styles = await Bun.file('src/lib/webserver/app.css').text();
 interface AppProps {
 	books: Book[];
 	lastChecked?: Date | null;
+	lastSynced?: Date | null;
 }
 
-export default function App({ books, lastChecked }: AppProps) {
+export default function App({ books, lastChecked, lastSynced }: AppProps) {
 	return (
 		<html lang="de" data-theme="dark">
 			<head lang="de">
@@ -34,7 +35,7 @@ export default function App({ books, lastChecked }: AppProps) {
 				<div className="container">
 					<AppHeader books={books} />
 					<BookList books={books} />
-					<Status lastChecked={lastChecked} />
+					<Status lastChecked={lastChecked} lastSynced={lastSynced} />
 				</div>
 			</body>
 		</html>

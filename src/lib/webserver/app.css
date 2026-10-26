@@ -199,7 +199,14 @@ a.book-title:hover {
 	margin-top: 2rem;
 }
 
-.last-checked {
+.status-timestamps {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+}
+
+.last-checked,
+.last-synced {
 	font-style: italic;
 	color: var(--ink-faint);
 	font-size: 0.85rem;

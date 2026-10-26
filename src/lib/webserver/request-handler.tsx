@@ -70,9 +70,12 @@ export async function handleRequests(request: Request, _server?: Server): Promis
 		}
 		const books = BookRepository.getAllBooks();
 		const state = BookRepository.getAppState();
-		const stream = await renderToReadableStream(<App books={books} lastChecked={state.lastChecked} />, {
-			bootstrapScriptContent: scripts,
-		});
+		const stream = await renderToReadableStream(
+			<App books={books} lastChecked={state.lastChecked} lastSynced={state.lastSynced} />,
+			{
+				bootstrapScriptContent: scripts,
+			},
+		);
 
 		return new Response(stream, {
 			headers: { 'Content-Type': 'text/html' },
