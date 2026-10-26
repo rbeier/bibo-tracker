@@ -5,12 +5,14 @@ import type { Book } from '../src/types/models/book.ts';
 test.describe('Scraper Test', () => {
 	test('should check book availability', async ({ page }) => {
 		const book: Book = {
+			id: 'test-scraper-1',
 			title: 'Holly',
 			author: 'Stephen King',
-			notionId: '',
 			location: '',
 			isAvailable: false,
 			permalink: '',
+			returnDate: null,
+			lastCheckedAt: null,
 		};
 
 		const bookInformation = await getBookInformation(page, book);

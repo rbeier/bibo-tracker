@@ -135,3 +135,9 @@ dist
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# SQLite data
+/data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm

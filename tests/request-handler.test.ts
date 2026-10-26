@@ -16,11 +16,7 @@ describe('HTTP Request Handler & Sync API', () => {
 
 	afterEach(() => {
 		closeDatabase();
-		if (originalApiKey === undefined) {
-			delete Bun.env.API_KEY;
-		} else {
-			Bun.env.API_KEY = originalApiKey;
-		}
+		Bun.env.API_KEY = originalApiKey ?? '';
 	});
 
 	test('GET /api/health returns public health status', async () => {
@@ -156,9 +152,7 @@ describe('HTTP Request Handler & Sync API', () => {
 		const notFound = await handleRequests(new Request('http://localhost:3000/unknown'));
 		expect(notFound.status).toBe(404);
 
-		const methodNotAllowed = await handleRequests(
-			new Request('http://localhost:3000/api/books', { method: 'DELETE' }),
-		);
+		const methodNotAllowed = await handleRequests(new Request('http://localhost:3000/api/books', { method: 'DELETE' }));
 		expect(methodNotAllowed.status).toBe(405);
 	});
 });

@@ -48,9 +48,7 @@ function rowToBook(row: BookRow): Book {
 
 export namespace BookRepository {
 	export function getAllBooks(): Book[] {
-		const rows = getDatabase()
-			.query<BookRow, []>('SELECT * FROM books ORDER BY sort_order ASC, created_at ASC')
-			.all();
+		const rows = getDatabase().query<BookRow, []>('SELECT * FROM books ORDER BY sort_order ASC, created_at ASC').all();
 		return rows.map(rowToBook);
 	}
 

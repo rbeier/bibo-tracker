@@ -22,9 +22,13 @@ jobs:
         run: bunx playwright install chromium
 
       - name: Run docker compose
+        env:
+          API_KEY: test-ci-api-key
         run: docker compose up -d
 
       - name: Run tests
+        env:
+          API_KEY: test-ci-api-key
         run: bun run test
 
       - name: Shutdown docker container
@@ -43,7 +47,8 @@ jobs:
       - run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
             cd /opt/bibo-tracker
-            docker compose down -v
+            mkdir -p data
+            docker compose down
             git pull
             docker compose up --build -d
           "
