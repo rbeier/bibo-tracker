@@ -209,6 +209,11 @@ When `checkBooks` finishes scraping a book (`ScraperResult`), its row is updated
 
 ### 4.3 `POST /api/books` — Sync Book Snapshot
 
+#### Query Parameters (Optional)
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `skipScrape` | `boolean` (`"true"`) | `false` | When `true` (`POST /api/books?skipScrape=true`), persists the snapshot without triggering a background Playwright catalog scrape for added/updated books. Useful for connector smoke tests and dry runs. |
+
 #### Request Headers
 ```http
 POST /api/books HTTP/1.1

@@ -503,10 +503,82 @@ main().catch((err) => {
 
 ### 4.8 `src/discover.ts` — One-Shot ID Discovery Script
 
-Include a small `discover.ts` helper so finding `ANYTYPE_SPACE_ID`, `ANYTYPE_LIST_ID`, `ANYTYPE_VIEW_ID`, and property keys requires zero manual `curl` guesswork:
-1. `GET /v1/spaces` → prints each space `name` and `id`.
-2. For each space: `GET /v1/spaces/{space_id}/properties` → prints property `name`, `key`, and `format`.
-3. `POST /v1/spaces/{space_id}/search` with `{ "types": ["set", "collection"] }` → prints each Set/Collection `name` and `id` (`ANYTYPE_LIST_ID`), then queries `GET /v1/spaces/{space_id}/lists/{list_id}/views` to print each `view.name` and `view.id` (`ANYTYPE_VIEW_ID`).
+Finding `ANYTYPE_SPACE_ID`, `ANYTYPE_LIST_ID`, `ANYTYPE_VIEW_ID`, and property keys requires zero manual `curl` guesswork with this discovery script (`bun run discover`):
+
+```ts
+import type { AnytypePaginatedResponse } from './types.ts';
+
+const baseUrl = Bun.env.ANYTYPE_API_URL || 'http://127.0.0.1:31012';
+const apiVersion = Bun.env.ANYTYPE_API_VERSION || '2025-11-08';
+const apiKey = Bun.env.ANYTYPE_API_KEY?.trim();
+
+if (!apiKey) {
+	console.error('Missing ANYTYPE_API_KEY in environment');
+	process.exit(1);
+}
+
+async function apiGet<T>(path: string): Promise<T> {
+	const res = await fetch(new URL(path, baseUrl), {
+		headers: {
+			Authorization: `Bearer ${apiKey}`,
+			'Anytype-Version': apiVersion,
+			Accept: 'application/json',
+		},
+	});
+	if (!res.ok) throw new Error(`GET ${path} failed (${res.status}): ${await res.text()}`);
+	return (await res.json()) as T;
+}
+
+async function apiPost<T>(path: string, body: unknown): Promise<T> {
+	const res = await fetch(new URL(path, baseUrl), {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${apiKey}`,
+			'Anytype-Version': apiVersion,
+			'Content-Type': 'application/json',
+			Accept: 'application/json',
+		},
+		body: JSON.stringify(body),
+	});
+	if (!res.ok) throw new Error(`POST ${path} failed (${res.status}): ${await res.text()}`);
+	return (await res.json()) as T;
+}
+
+async function discover() {
+	const spaces = await apiGet<AnytypePaginatedResponse<{ id: string; name: string }>>('/v1/spaces');
+	for (const space of spaces.data ?? []) {
+		console.log(`\n=== Space: "${space.name}" (ANYTYPE_SPACE_ID=${space.id}) ===`);
+
+		const props = await apiGet<AnytypePaginatedResponse<{ id: string; key: string; name: string; format: string }>>(
+			`/v1/spaces/${space.id}/properties`,
+		);
+		console.log('  Properties:');
+		for (const p of props.data ?? []) {
+			console.log(`    - ${p.name} (key="${p.key}", format=${p.format})`);
+		}
+
+		const lists = await apiPost<AnytypePaginatedResponse<{ id: string; name: string; type?: string }>>(
+			`/v1/spaces/${space.id}/search`,
+			{ types: ['set', 'collection'] },
+		);
+		console.log('  Sets / Collections:');
+		for (const list of lists.data ?? []) {
+			console.log(`    - "${list.name}" (ANYTYPE_LIST_ID=${list.id})`);
+			const views = await apiGet<AnytypePaginatedResponse<{ id: string; name: string; layout?: string }>>(
+				`/v1/spaces/${space.id}/lists/${list.id}/views`,
+			);
+			for (const view of views.data ?? []) {
+				console.log(`        View: "${view.name}" (ANYTYPE_VIEW_ID=${view.id}, layout=${view.layout ?? 'default'})`);
+			}
+		}
+	}
+}
+
+discover().catch((err) => {
+	console.error('Discovery failed:', err);
+	process.exit(1);
+});
+```
 
 ---
 
@@ -559,9 +631,9 @@ journalctl --user -u bibo-connector.service -n 50
      -H "Authorization: Bearer $ANYTYPE_API_KEY" \
      -H "Anytype-Version: 2025-11-08"
    ```
-2. **Verify `bibo-tracker` Sync Endpoint from Raspberry Pi:**
+2. **Verify `bibo-tracker` Sync Endpoint from Raspberry Pi (using `?skipScrape=true` for a fast dry-run test):**
    ```bash
-   curl -i -X POST "$BIBO_TRACKER_URL/api/books" \
+   curl -i -X POST "$BIBO_TRACKER_URL/api/books?skipScrape=true" \
      -H "Authorization: Bearer $BIBO_API_KEY" \
      -H "Content-Type: application/json" \
      -d '{"books":[{"id":"test-1","title":"Holly","author":"Stephen King"}]}'

@@ -26,9 +26,9 @@ Remove the Notion SDK and all Notion-specific connectors, filters, mappers, and 
 | `src/types/api/sync-books.ts` | Request/response TypeScript types (`SyncBookInput`, `SyncBooksRequest`, `SyncBooksResponse`) and strict runtime validator (`validateSyncBooksRequest`). |
 | `src/lib/db/database.ts` | Singleton `bun:sqlite` connection manager, directory initialization, WAL/busy-timeout pragmas, schema DDL execution, and test reset helpers. |
 | `src/lib/db/book-repository.ts` | Data access & transactional sync logic (`getAllBooks`, `getBooksByIds`, `syncBooksSnapshot`, `updateBookScraperStatus`, `getAppState`, `updateLastChecked`). |
-| `src/lib/webserver/api-auth.ts` | Constant-time Bearer token verification (`verifyBearerToken`) against `Bun.env.API_KEY`. |
-| `tests/book-repository.spec.ts` | Automated tests for SQLite snapshot reconciliation, order preservation, empty-snapshot guard, and scraper updates using `:memory:`. |
-| `tests/sync-api.spec.ts` | Automated HTTP endpoint tests for auth (`401`), validation (`400`), conflict guard (`409`), sync (`200`), and UI rendering. |
+| `src/lib/webserver/api-auth.ts` | Constant-time Bearer token verification (`verifyApiAuth`) against `Bun.env.API_KEY`. |
+| `tests/book-repository.test.ts` | Bun unit tests (`bun:test`) for SQLite snapshot reconciliation, order preservation, empty-snapshot guard, and scraper updates using `:memory:`. |
+| `tests/request-handler.test.ts` | Bun integration tests (`bun:test`) for HTTP endpoint auth (`401`/`503`), validation (`400`), conflict guard (`409`), sync (`200`), and SSR UI rendering. |
 
 ### 1.3 Files to Modify
 | Path | Summary of Changes |
