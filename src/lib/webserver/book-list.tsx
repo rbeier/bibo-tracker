@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import type { Book } from '../../types/models/book.ts';
 
 interface BookListProps {
@@ -18,6 +19,14 @@ function splitLocation(location?: string): { code: string; rest: string } {
 	return { code: '', rest: location };
 }
 
+function formatReturnDate(book: Book): string {
+	if (book.isAvailable || !book.returnDate) {
+		return '';
+	}
+	const dt = DateTime.fromISO(book.returnDate);
+	return dt.isValid ? `bis ${dt.toFormat('dd.MM.yyyy')}` : '';
+}
+
 export function BookList({ books }: BookListProps) {
 	// available books first, otherwise keep incoming order
 	const sorted = [...books].sort((a, b) => Number(b.isAvailable) - Number(a.isAvailable));
@@ -34,10 +43,11 @@ export function BookList({ books }: BookListProps) {
 		<div className="list-container">
 			{sorted.map((book) => {
 				const { code, rest } = splitLocation(book.location);
-				const meta = [rest, book.author].filter(Boolean).join(' · ');
+				const returnInfo = formatReturnDate(book);
+				const meta = [rest, book.author, returnInfo].filter(Boolean).join(' · ');
 
 				return (
-					<div className="book" key={book.notionId}>
+					<div className="book" key={book.id}>
 						<span
 							className={`book-status ${book.isAvailable ? 'available' : 'unavailable'}`}
 							title={book.isAvailable ? 'Verfügbar' : 'Ausgeliehen'}

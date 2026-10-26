@@ -6,8 +6,8 @@
 		"check-books": "bun src/index.ts --checkBooks",
 		"format": "biome format",
 		"lint": "biome lint",
-		"test": "bun test tests/book-repository.test.ts && playwright test",
-		"test:unit": "bun test"
+		"test": "bun test tests/book-repository.test.ts tests/request-handler.test.ts && playwright test",
+		"test:unit": "bun test tests/book-repository.test.ts tests/request-handler.test.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
