@@ -1,7 +1,7 @@
 declare module 'bun' {
 	interface Env {
-		NOTION_API_KEY: string;
-		NOTION_DATABASE_ID: string;
+		API_KEY?: string;
+		DATABASE_PATH?: string;
 		ENVIRONMENT?: string;
 
 		NTFY_URL?: string;
