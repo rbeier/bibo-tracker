@@ -7,7 +7,7 @@ export class ScraperUtil {
 
 	async fillSearchForm(book: Book) {
 		const searchInput = this.page.getByRole('textbox', { name: 'Suchbegriff' });
-		await searchInput.fill(`${book.title} ${book.author}`);
+		await searchInput.fill(`${book.title} ${book.author}`.trim());
 
 		await this.page.getByRole('combobox').first().selectOption({ index: 1 }); // Zweigstelle
 		await this.page.getByText('Physische Medien').click(); // Medienart

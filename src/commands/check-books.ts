@@ -1,56 +1,110 @@
-import type {PageObjectResponse} from '@notionhq/client/build/src/api-endpoints';
-import {queryBookList, updateBookStatus} from '../lib/notion/notion-connector.ts';
-import {getBookInformation, launchBrowser} from '../lib/scraper/scraper.ts';
-import {Store} from '../lib/store/store.ts';
-import type {Book} from '../types/models/book.ts';
-import {notionPageToBook} from '../util/mapper-util.ts';
+import { BookRepository } from '../lib/db/book-repository.ts';
 import { sendNotificationIfBookAvailable, sendScraperFailureNotification } from '../lib/notification/notification.ts';
-import type {ScraperResult} from "../types/models/scraper-result.ts";
+import { getBookInformation, launchBrowser } from '../lib/scraper/scraper.ts';
+import type { Book } from '../types/models/book.ts';
+import type { ScraperResult } from '../types/models/scraper-result.ts';
+
+export type CheckBooksOptions = {
+	bookIds?: string[];
+};
+
+let activeScrape = false;
+let queuedFullScrape = false;
+const queuedBookIds = new Set<string>();
+
+export function isScraperRunning(): boolean {
+	return activeScrape;
+}
 
 export async function fetchBooks(): Promise<Book[]> {
-	try {
-		const response = await queryBookList();
+	return BookRepository.getAllBooks();
+}
 
-		const results = response.results as PageObjectResponse[];
-		return results.map(notionPageToBook);
-	} catch (_e) {
-		return [];
+export async function checkBooks(options?: CheckBooksOptions): Promise<void> {
+	if (activeScrape) {
+		if (!options?.bookIds) {
+			queuedFullScrape = true;
+		} else {
+			for (const id of options.bookIds) {
+				queuedBookIds.add(id);
+			}
+		}
+		console.log('Book check already running; queued follow-up check.');
+		return;
+	}
+
+	activeScrape = true;
+
+	try {
+		await runScrapePass(options?.bookIds);
+
+		while (queuedFullScrape || queuedBookIds.size > 0) {
+			if (queuedFullScrape) {
+				queuedFullScrape = false;
+				queuedBookIds.clear();
+				await runScrapePass(undefined);
+			} else {
+				const nextIds = Array.from(queuedBookIds);
+				queuedBookIds.clear();
+				await runScrapePass(nextIds);
+			}
+		}
+	} finally {
+		activeScrape = false;
 	}
 }
 
-export async function checkBooks() {
-    console.log('Checking books...');
-    const startTime = performance.now();
-    const books = await fetchBooks();
+async function runScrapePass(bookIds?: string[]): Promise<void> {
+	const isFullCheck = !bookIds;
+	const books = bookIds ? BookRepository.getBooksByIds(bookIds) : BookRepository.getAllBooks();
 
-    const context = await launchBrowser();
-    const page = await context.newPage();
+	if (books.length === 0) {
+		console.log('No books to check.');
+		if (isFullCheck) {
+			BookRepository.updateLastChecked();
+		}
+		return;
+	}
 
-    for (const book of books) {
-        let bookInformation: ScraperResult | undefined;
-        console.log('Checking book:', book.title);
+	console.log(`Checking ${books.length} book(s)...`);
+	const startTime = performance.now();
 
-        try {
-            bookInformation = await getBookInformation(page, book);
-            console.log(`Book "${book.title}" is ${bookInformation.isAvailable ? 'available' : 'not available'}`);
-        } catch (error) {
-            console.error(`Error getting book information "${book.title}":`, error);
-            await sendScraperFailureNotification(book, error);
-        }
+	const context = await launchBrowser();
 
-		if (bookInformation) {
-            await sendNotificationIfBookAvailable(book, bookInformation);
-            await updateBookStatus(book, bookInformation);
-        }
-    }
+	try {
+		const page = await context.newPage();
 
-    console.log('Finished checking books');
+		for (const book of books) {
+			let bookInformation: ScraperResult | undefined;
+			console.log('Checking book:', book.title);
 
-    const runtimeMs = performance.now() - startTime;
-    const timePerBookMs = books.length > 0 ? runtimeMs / books.length : 0;
-    console.log(`Total runtime: ${(runtimeMs / 1000).toFixed(2)}s for ${books.length} book(s)`);
-    console.log(`Time per book: ${(timePerBookMs / 1000).toFixed(2)}s`);
+			try {
+				bookInformation = await getBookInformation(page, book);
+				console.log(`Book "${book.title}" is ${bookInformation.isAvailable ? 'available' : 'not available'}`);
+			} catch (error) {
+				console.error(`Error getting book information "${book.title}":`, error);
+				await sendScraperFailureNotification(book, error);
+			}
 
-    await context.close();
-    Store.updateLastChecked();
+			if (bookInformation) {
+				await sendNotificationIfBookAvailable(book, bookInformation);
+				BookRepository.updateBookScraperStatus(book.id, bookInformation);
+			}
+		}
+
+		console.log('Finished checking books');
+
+		const runtimeMs = performance.now() - startTime;
+		const timePerBookMs = books.length > 0 ? runtimeMs / books.length : 0;
+		console.log(`Total runtime: ${(runtimeMs / 1000).toFixed(2)}s for ${books.length} book(s)`);
+		console.log(`Time per book: ${(timePerBookMs / 1000).toFixed(2)}s`);
+
+		if (isFullCheck || books.length === BookRepository.countBooks()) {
+			BookRepository.updateLastChecked();
+		}
+	} finally {
+		const browser = context.browser();
+		await context.close();
+		await browser?.close();
+	}
 }

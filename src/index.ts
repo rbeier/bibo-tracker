@@ -1,8 +1,11 @@
 import { serve } from 'bun';
 import { checkBooks } from './commands/check-books.ts';
+import { initDatabase } from './lib/db/database.ts';
 import { handleRequests } from './lib/webserver/request-handler.tsx';
 import { parseCliArgs } from './util/cli-args.ts';
 import { scheduleCommand } from './util/cron-util.ts';
+
+initDatabase();
 
 const args = parseCliArgs();
 
@@ -10,6 +13,10 @@ const args = parseCliArgs();
 if (args.checkBooks) {
 	await checkBooks();
 	process.exit(0);
+}
+
+if (!Bun.env.API_KEY?.trim()) {
+	console.warn('Warning: API_KEY is not configured. Sync endpoints (/api/books) will return 503.');
 }
 
 // scheduler
