@@ -3,7 +3,7 @@ import { DateTime } from 'luxon';
 import { type Locator, type Page, chromium } from 'playwright';
 import type { Book } from '../../types/models/book.ts';
 import type { ScraperResult } from '../../types/models/scraper-result.ts';
-import { ScraperUtil, newScraperResult } from './scraper-util.ts';
+import { ScraperUtil, buildTitleRegex, newScraperResult } from './scraper-util.ts';
 
 let scraperUtil: ScraperUtil;
 
@@ -28,9 +28,7 @@ export async function getBookInformation(page: Page, book: Book): Promise<Scrape
 	const searchResults = await page
 		.locator('[id$="_divMedium"]')
 		.filter({
-			has: page
-				.getByRole('heading')
-				.filter({ hasText: new RegExp(`^${book.title.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&')}$`, 'i') }),
+			has: page.getByRole('heading').filter({ hasText: buildTitleRegex(book.title) }),
 		})
 		.filter({
 			has: page.locator('.itemtype.book'),

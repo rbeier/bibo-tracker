@@ -51,6 +51,16 @@ export class ScraperUtil {
 	}
 }
 
+export function buildTitleRegex(title: string): RegExp {
+	const words = title
+		.replace(/[^\p{L}\p{N}\s]/gu, ' ')
+		.trim()
+		.split(/\s+/)
+		.filter(Boolean);
+
+	return new RegExp(`^[^\\p{L}\\p{N}]*${words.join('[^\\p{L}\\p{N}]+')}[^\\p{L}\\p{N}]*$`, 'iu');
+}
+
 export function newScraperResult(): ScraperResult {
 	return {
 		isAvailable: false,

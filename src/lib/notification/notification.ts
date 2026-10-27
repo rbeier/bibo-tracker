@@ -33,6 +33,6 @@ export const sendNotificationIfBookAvailable = async (book: Book, scraperResult:
 
 export const sendScraperFailureNotification = async (book: Book, error: unknown) => {
 	const reason = error instanceof Error ? error.message : String(error);
-	return sendNotification(`⚠️ Konnte Buchinformationen nicht abrufen: ${book.title}\n${reason}`, 'Bibo-Tracker Fehler');
+	return sendNotification(`⚠️ Konnte Buchinformationen nicht abrufen:\n${book.title}, ${book.author}\n${reason}`);
 };
 

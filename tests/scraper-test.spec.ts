@@ -6,8 +6,8 @@ test.describe('Scraper Test', () => {
 	test('should check book availability', async ({ page }) => {
 		const book: Book = {
 			id: 'test-scraper-1',
-			title: 'Holly',
-			author: 'Stephen King',
+			title: 'Keine Angst Darling',
+			author: 'Vera Buck',
 			location: '',
 			isAvailable: false,
 			permalink: '',
