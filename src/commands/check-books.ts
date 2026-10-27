@@ -72,12 +72,11 @@ async function runScrapePass(bookIds?: string[]): Promise<void> {
 	const context = await launchBrowser();
 
 	try {
-		const page = await context.newPage();
-
 		for (const book of books) {
 			let bookInformation: ScraperResult | undefined;
 			console.log('Checking book:', book.title);
 
+			const page = await context.newPage();
 			try {
 				bookInformation = await getBookInformation(page, book);
 				console.log(`Book "${book.title}" is ${bookInformation.isAvailable ? 'available' : 'not available'}`);
@@ -85,6 +84,8 @@ async function runScrapePass(bookIds?: string[]): Promise<void> {
 				console.error(`Error getting book information "${book.title}":`, error);
 				BookRepository.updateBookScraperError(book.id, error);
 				await sendScraperFailureNotification(book, error);
+			} finally {
+				await page.close();
 			}
 
 			if (bookInformation) {

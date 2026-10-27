@@ -23,10 +23,18 @@ export async function getBookInformation(page: Page, book: Book): Promise<Scrape
 
 	await scraperUtil.fillSearchForm(book);
 	await scraperUtil.searchForBook();
-	expect(page.url()).toContain('searchhash');
 
-	const searchResults = await page
-		.locator('[id$="_divMedium"]')
+	await page.waitForURL(/searchhash/, { timeout: 15000 }).catch(() => {});
+
+	const mediumLocator = page.locator('[id$="_divMedium"]');
+	const noResultsLocator = page.getByText(/Ihre Suche erzielte keine Treffer|Keine Medien gefunden/i);
+
+	await Promise.race([
+		mediumLocator.first().waitFor({ state: 'visible', timeout: 15000 }),
+		noResultsLocator.waitFor({ state: 'visible', timeout: 15000 }),
+	]).catch(() => {});
+
+	const searchResults = await mediumLocator
 		.filter({
 			has: page.getByRole('heading').filter({ hasText: buildTitleRegex(book.title) }),
 		})
@@ -35,7 +43,9 @@ export async function getBookInformation(page: Page, book: Book): Promise<Scrape
 		})
 		.all();
 
-	expect.soft(searchResults.length).toBeGreaterThanOrEqual(1);
+	if (searchResults.length === 0) {
+		throw new Error(`Buch "${book.title}" wurde im Katalog nicht gefunden`);
+	}
 
 	for (const result of searchResults) {
 		bookData = await extractData(page, result);

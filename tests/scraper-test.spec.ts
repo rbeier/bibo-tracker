@@ -6,8 +6,8 @@ test.describe('Scraper Test', () => {
 	test('should check book availability', async ({ page }) => {
 		const book: Book = {
 			id: 'test-scraper-1',
-			title: 'Keine Angst Darling',
-			author: 'Vera Buck',
+			title: 'Cum/Ex, Milliarden und Moral',
+			author: 'Anne Brorhilker',
 			location: '',
 			isAvailable: false,
 			permalink: '',
