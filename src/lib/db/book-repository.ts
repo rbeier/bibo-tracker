@@ -32,6 +32,8 @@ export type SnapshotSyncSummary = {
 	unchanged: number;
 	removed: number;
 	booksToScrapeIds: string[];
+	addedBooks?: Array<{ id: string; title: string; author: string }>;
+	removedBooks?: Array<{ id: string; title: string; author: string }>;
 };
 
 function rowToBook(row: BookRow): Book {
@@ -85,11 +87,13 @@ export namespace BookRepository {
 			const incomingIds = new Set(inputs.map((b) => b.id));
 
 			let removed = 0;
+			const removedBooks: Array<{ id: string; title: string; author: string }> = [];
 			const deleteStmt = db.query('DELETE FROM books WHERE id = ?');
 			for (const existing of existingRows) {
 				if (!incomingIds.has(existing.id)) {
 					deleteStmt.run(existing.id);
 					removed++;
+					removedBooks.push({ id: existing.id, title: existing.title, author: existing.author });
 				}
 			}
 
@@ -97,6 +101,7 @@ export namespace BookRepository {
 			let updated = 0;
 			let unchanged = 0;
 			const booksToScrapeIds: string[] = [];
+			const addedBooks: Array<{ id: string; title: string; author: string }> = [];
 
 			const insertStmt = db.query(`
 				INSERT INTO books (id, title, author, sort_order, is_available, location, permalink, return_date, last_checked_at, scrape_error, created_at, updated_at)
@@ -122,6 +127,7 @@ export namespace BookRepository {
 					insertStmt.run(input.id, title, author, index, now, now);
 					added++;
 					booksToScrapeIds.push(input.id);
+					addedBooks.push({ id: input.id, title, author });
 				} else if (existing.title !== title || existing.author !== author) {
 					updateChangedMetaStmt.run(title, author, index, now, input.id);
 					updated++;
@@ -144,6 +150,8 @@ export namespace BookRepository {
 				unchanged,
 				removed,
 				booksToScrapeIds,
+				addedBooks,
+				removedBooks,
 			};
 		});
 

@@ -155,6 +155,92 @@ describe('HTTP Request Handler & Sync API', () => {
 		expect(BookRepository.countBooks()).toBe(0);
 	});
 
+	test('POST /api/books sends NTFY notification when books are added or removed, but omits when unchanged', async () => {
+		const originalFetch = globalThis.fetch;
+		const ntfyCalls: Array<{ url: string; headers: Record<string, string>; body: string }> = [];
+
+		Bun.env.NTFY_URL = 'https://ntfy.sh';
+		Bun.env.NTFY_TOPIC = 'test-topic';
+		Bun.env.NTFY_API_KEY = 'test-ntfy-key';
+
+		globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+			const urlStr = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+			ntfyCalls.push({
+				url: urlStr,
+				headers: (init?.headers as Record<string, string>) || {},
+				body: typeof init?.body === 'string' ? init.body : '',
+			});
+			return new Response('ok', { status: 200 });
+		}) as unknown as typeof fetch;
+
+		try {
+			// 1. Initial sync adding 2 books -> should notify
+			await handleRequests(
+				new Request('http://localhost:3000/api/books?skipScrape=true', {
+					method: 'POST',
+					headers: {
+						Authorization: `Bearer ${TEST_API_KEY}`,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						books: [
+							{ id: 'b-1', title: 'Buch Eins', author: 'Autor A' },
+							{ id: 'b-2', title: 'Buch Zwei' },
+						],
+					}),
+				}),
+			);
+
+			expect(ntfyCalls).toHaveLength(1);
+			expect(ntfyCalls[0].url).toBe('https://ntfy.sh/test-topic');
+			expect(ntfyCalls[0].headers.Title).toBe('=?UTF-8?B?8J+TmiBCw7xjaGVybGlzdGUgYWt0dWFsaXNpZXJ0?=');
+			expect(ntfyCalls[0].body).toContain('+ Buch Eins (Autor A)');
+			expect(ntfyCalls[0].body).toContain('+ Buch Zwei');
+
+			// 2. Re-sync identical books (unchanged) -> should NOT notify
+			ntfyCalls.length = 0;
+			await handleRequests(
+				new Request('http://localhost:3000/api/books?skipScrape=true', {
+					method: 'POST',
+					headers: {
+						Authorization: `Bearer ${TEST_API_KEY}`,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						books: [
+							{ id: 'b-1', title: 'Buch Eins', author: 'Autor A' },
+							{ id: 'b-2', title: 'Buch Zwei' },
+						],
+					}),
+				}),
+			);
+
+			expect(ntfyCalls).toHaveLength(0);
+
+			// 3. Remove a book -> should notify
+			await handleRequests(
+				new Request('http://localhost:3000/api/books?skipScrape=true', {
+					method: 'POST',
+					headers: {
+						Authorization: `Bearer ${TEST_API_KEY}`,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						books: [{ id: 'b-1', title: 'Buch Eins', author: 'Autor A' }],
+					}),
+				}),
+			);
+
+			expect(ntfyCalls).toHaveLength(1);
+			expect(ntfyCalls[0].body).toContain('- Buch Zwei');
+		} finally {
+			globalThis.fetch = originalFetch;
+			Bun.env.NTFY_URL = undefined;
+			Bun.env.NTFY_TOPIC = undefined;
+			Bun.env.NTFY_API_KEY = undefined;
+		}
+	});
+
 	test('returns 404 for unknown routes and 405 for unsupported methods', async () => {
 		const notFound = await handleRequests(new Request('http://localhost:3000/unknown'));
 		expect(notFound.status).toBe(404);

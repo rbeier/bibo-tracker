@@ -7,6 +7,7 @@ import { renderToReadableStream } from 'react-dom/server';
 import { checkBooks, isScraperRunning } from '../../commands/check-books.ts';
 import { type SyncBooksResponse, validateSyncBooksRequest } from '../../types/api/sync-books.ts';
 import { BookRepository, EmptySnapshotError } from '../db/book-repository.ts';
+import { sendBookListUpdatedNotification } from '../notification/notification.ts';
 import { verifyApiAuth } from './api-auth.ts';
 import App from './app.tsx';
 
@@ -112,6 +113,10 @@ async function handleSyncBooksPost(request: Request, url: URL): Promise<Response
 		const summary = BookRepository.syncBooksSnapshot(validation.data.books, {
 			allowEmpty: validation.data.allowEmpty,
 		});
+
+		if (summary.added > 0 || summary.removed > 0) {
+			void sendBookListUpdatedNotification(summary);
+		}
 
 		const skipScrape = url.searchParams.get('skipScrape') === 'true';
 		const scrapeTriggered = summary.booksToScrapeIds.length > 0 && !skipScrape;

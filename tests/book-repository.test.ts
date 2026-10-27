@@ -26,6 +26,11 @@ describe('BookRepository & Sync Payload Validation', () => {
 		expect(summary.unchanged).toBe(0);
 		expect(summary.removed).toBe(0);
 		expect(summary.booksToScrapeIds).toEqual(['book-1', 'book-2', 'book-3']);
+		expect(summary.addedBooks).toEqual([
+			{ id: 'book-1', title: 'Holly', author: 'Stephen King' },
+			{ id: 'book-2', title: 'Der Schwarm', author: 'Frank Schätzing' },
+			{ id: 'book-3', title: 'Ohne Autor', author: '' },
+		]);
 
 		const books = BookRepository.getAllBooks();
 		expect(books).toHaveLength(3);
@@ -121,6 +126,7 @@ describe('BookRepository & Sync Payload Validation', () => {
 			unchanged: 0,
 			removed: 1,
 			booksToScrapeIds: ['book-1'],
+			removedBooks: [{ id: 'book-2', title: 'To Remove', author: 'Someone' }],
 		});
 
 		const [book1] = BookRepository.getAllBooks();
