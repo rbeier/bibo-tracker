@@ -83,6 +83,7 @@ async function runScrapePass(bookIds?: string[]): Promise<void> {
 				console.log(`Book "${book.title}" is ${bookInformation.isAvailable ? 'available' : 'not available'}`);
 			} catch (error) {
 				console.error(`Error getting book information "${book.title}":`, error);
+				BookRepository.updateBookScraperError(book.id, error);
 				await sendScraperFailureNotification(book, error);
 			}
 

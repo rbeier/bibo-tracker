@@ -40,6 +40,7 @@ export function initDatabase(dbPath: string = Bun.env.DATABASE_PATH || DEFAULT_D
 			permalink       TEXT,
 			return_date     TEXT,
 			last_checked_at TEXT,
+			scrape_error    TEXT,
 			created_at      TEXT NOT NULL,
 			updated_at      TEXT NOT NULL
 		);
@@ -51,6 +52,11 @@ export function initDatabase(dbPath: string = Bun.env.DATABASE_PATH || DEFAULT_D
 			value TEXT NOT NULL
 		);
 	`);
+
+	const columns = db.query<{ name: string }, []>('PRAGMA table_info(books)').all();
+	if (!columns.some((col) => col.name === 'scrape_error')) {
+		db.exec('ALTER TABLE books ADD COLUMN scrape_error TEXT;');
+	}
 
 	dbInstance = db;
 	return db;

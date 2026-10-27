@@ -14,6 +14,7 @@ type BookRow = {
 	permalink: string | null;
 	return_date: string | null;
 	last_checked_at: string | null;
+	scrape_error: string | null;
 };
 
 export class EmptySnapshotError extends Error {
@@ -43,6 +44,7 @@ function rowToBook(row: BookRow): Book {
 		permalink: row.permalink,
 		returnDate: row.return_date,
 		lastCheckedAt: row.last_checked_at,
+		scrapeError: row.scrape_error,
 	};
 }
 
@@ -97,13 +99,13 @@ export namespace BookRepository {
 			const booksToScrapeIds: string[] = [];
 
 			const insertStmt = db.query(`
-				INSERT INTO books (id, title, author, sort_order, is_available, location, permalink, return_date, last_checked_at, created_at, updated_at)
-				VALUES (?, ?, ?, ?, 0, '', NULL, NULL, NULL, ?, ?)
+				INSERT INTO books (id, title, author, sort_order, is_available, location, permalink, return_date, last_checked_at, scrape_error, created_at, updated_at)
+				VALUES (?, ?, ?, ?, 0, '', NULL, NULL, NULL, NULL, ?, ?)
 			`);
 
 			const updateChangedMetaStmt = db.query(`
 				UPDATE books
-				SET title = ?, author = ?, sort_order = ?, location = '', permalink = NULL, return_date = NULL, last_checked_at = NULL, updated_at = ?
+				SET title = ?, author = ?, sort_order = ?, location = '', permalink = NULL, return_date = NULL, last_checked_at = NULL, scrape_error = NULL, updated_at = ?
 				WHERE id = ?
 			`);
 
@@ -163,10 +165,25 @@ export namespace BookRepository {
 				    location = COALESCE(?, location),
 				    permalink = COALESCE(?, permalink),
 				    last_checked_at = ?,
+				    scrape_error = NULL,
 				    updated_at = ?
 				WHERE id = ?
 			`)
 			.run(isAvailableInt, returnDateIso, cleanLocation, cleanPermalink, now, now, bookId);
+	}
+
+	export function updateBookScraperError(bookId: string, error: unknown): void {
+		const now = new Date().toISOString();
+		const reason = error instanceof Error ? error.message : String(error);
+
+		getDatabase()
+			.query(`
+				UPDATE books
+				SET scrape_error = ?,
+				    updated_at = ?
+				WHERE id = ?
+			`)
+			.run(reason || 'Unbekannter Fehler', now, bookId);
 	}
 
 	export function updateLastChecked(date: Date = new Date()): void {

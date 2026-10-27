@@ -164,6 +164,38 @@ describe('BookRepository & Sync Payload Validation', () => {
 		expect(BookRepository.getAppState().lastChecked?.toISOString()).toBe('2026-10-26T12:00:00.000Z');
 	});
 
+	test('should record scrape errors and clear them on successful scrape or title/author change', () => {
+		BookRepository.syncBooksSnapshot([
+			{ id: 'book-1', title: 'Unknown Book', author: 'Someone' },
+			{ id: 'book-2', title: 'Typo Title', author: 'Someone' },
+		]);
+
+		BookRepository.updateBookScraperError('book-1', new Error('No matching book found'));
+		BookRepository.updateBookScraperError('book-2', 'Timeout');
+
+		let books = BookRepository.getAllBooks();
+		expect(books[0].scrapeError).toBe('No matching book found');
+		expect(books[1].scrapeError).toBe('Timeout');
+
+		// Successful scrape clears scrapeError on book-1
+		BookRepository.updateBookScraperStatus('book-1', {
+			isAvailable: true,
+			location: 'R 11 Thriller',
+			permalink: 'https://katalog.halle.de/book-1',
+			returnDate: null,
+		});
+
+		// Updating title clears scrapeError on book-2
+		BookRepository.syncBooksSnapshot([
+			{ id: 'book-1', title: 'Unknown Book', author: 'Someone' },
+			{ id: 'book-2', title: 'Fixed Title', author: 'Someone' },
+		]);
+
+		books = BookRepository.getAllBooks();
+		expect(books[0].scrapeError).toBeNull();
+		expect(books[1].scrapeError).toBeNull();
+	});
+
 	test('should validate SyncBooksRequest payloads strictly', () => {
 		expect(validateSyncBooksRequest(null).ok).toBe(false);
 		expect(validateSyncBooksRequest({}).ok).toBe(false);

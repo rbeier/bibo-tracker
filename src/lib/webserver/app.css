@@ -15,6 +15,7 @@
 	/* availability */
 	--available: #7fb98a;
 	--borrowed: #c97a6d;
+	--warning: #c9a66d;
 	/* type */
 	--heading-font: "Newsreader", Georgia, "Times New Roman", serif;
 	--mono-font: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
@@ -129,6 +130,14 @@ h1.title {
 	box-shadow: 0 0 0 4px rgba(201, 122, 109, 0.12);
 }
 
+.book-title-row {
+	display: flex;
+	align-items: center;
+	gap: 0.45rem;
+	margin-bottom: 0.35rem;
+	min-width: 0;
+}
+
 .book-title {
 	display: block;
 	font-family: var(--heading-font);
@@ -137,10 +146,24 @@ h1.title {
 	line-height: 1.25;
 	letter-spacing: -0.01em;
 	color: var(--ink);
-	margin-bottom: 0.35rem;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.book-warning {
+	display: inline-flex;
+	align-items: center;
+	flex-shrink: 0;
+	color: var(--warning);
+	opacity: 0.78;
+	cursor: help;
+}
+
+.book-warning-icon {
+	width: 0.9rem;
+	height: 0.9rem;
+	display: block;
 }
 
 /* titles WITHOUT a permalink render as <span> — no underline, not clickable */

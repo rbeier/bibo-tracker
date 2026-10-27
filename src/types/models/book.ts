@@ -7,4 +7,5 @@ export type Book = {
 	permalink: string | null;
 	returnDate: string | null;
 	lastCheckedAt: string | null;
+	scrapeError?: string | null;
 };

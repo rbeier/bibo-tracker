@@ -93,7 +93,8 @@ describe('HTTP Request Handler & Sync API', () => {
 			scrapeTriggered: false,
 		});
 
-		// Simulate scraper finding return date for any-2
+		// Simulate scraper finding return date for any-2 and error for any-1
+		BookRepository.updateBookScraperError('any-1', new Error('Book not found'));
 		BookRepository.updateBookScraperStatus('any-2', {
 			isAvailable: false,
 			location: 'R 11 SciFi',
@@ -108,17 +109,22 @@ describe('HTTP Request Handler & Sync API', () => {
 			}),
 		);
 		expect(getRes.status).toBe(200);
-		const getBody = (await getRes.json()) as { books: Array<{ id: string; returnDate: string | null }> };
+		const getBody = (await getRes.json()) as {
+			books: Array<{ id: string; returnDate: string | null; scrapeError: string | null }>;
+		};
 		expect(getBody.books).toHaveLength(2);
+		expect(getBody.books[0].scrapeError).toBe('Book not found');
 		expect(getBody.books[1].returnDate).toBe('2026-12-01');
+		expect(getBody.books[1].scrapeError).toBeNull();
 
-		// GET / renders SSR HTML containing synced books, formatted return date, and lastSynced timestamp
+		// GET / renders SSR HTML containing synced books, warning icon, formatted return date, and lastSynced timestamp
 		const uiRes = await handleRequests(new Request('http://localhost:3000/'));
 		expect(uiRes.status).toBe(200);
 		const html = await uiRes.text();
 		expect(html).toContain('Holly');
 		expect(html).toContain('Der Schwarm');
 		expect(html).toContain('bis 01.12.2026');
+		expect(html).toContain('book-warning');
 		expect(html).toContain('Zuletzt synchronisiert');
 
 		// Empty snapshot without allowEmpty returns 409 Conflict
