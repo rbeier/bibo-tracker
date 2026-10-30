@@ -18,13 +18,17 @@ export async function getBookInformation(page: Page, book: Book): Promise<Scrape
 	const returnDates: DateTime[] = [];
 	let bookData = newScraperResult();
 
-	await page.goto('https://katalog.halle.de/Mediensuche');
+	try {
+		await page.goto('https://katalog.halle.de/Mediensuche', { waitUntil: 'domcontentloaded', timeout: 20000 });
+	} catch {
+		await page.goto('https://katalog.halle.de/Mediensuche', { waitUntil: 'domcontentloaded', timeout: 20000 });
+	}
 	await expect(page.getByRole('heading', { name: 'Suche' })).toBeVisible();
 
 	await scraperUtil.fillSearchForm(book);
 	await scraperUtil.searchForBook();
 
-	await page.waitForURL(/searchhash/, { timeout: 15000 }).catch(() => {});
+	await page.waitForURL(/searchhash/, { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
 
 	const mediumLocator = page.locator('[id$="_divMedium"]');
 	const noResultsLocator = page.getByText(/Ihre Suche erzielte keine Treffer|Keine Medien gefunden/i);
@@ -58,7 +62,7 @@ export async function getBookInformation(page: Page, book: Book): Promise<Scrape
 			returnDates.push(bookData.returnDate);
 		}
 
-		await page.goBack();
+		await page.goBack({ waitUntil: 'domcontentloaded' });
 	}
 
 	return {

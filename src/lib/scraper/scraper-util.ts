@@ -16,7 +16,7 @@ export class ScraperUtil {
 	async searchForBook() {
 		await Promise.all([
 			this.page.getByRole('button', { name: 'Suchen' }).click(),
-			this.page.waitForLoadState('networkidle'),
+			this.page.waitForLoadState('domcontentloaded'),
 		]);
 	}
 
@@ -32,14 +32,10 @@ export class ScraperUtil {
 		let systematik = '';
 
 		try {
-			systematik = await this.page
-				.getByText('Systematik:')
-				.locator('xpath=following-sibling::a')
-				.first()
-				.innerText();
+			systematik = await this.page.getByText('Systematik:').locator('xpath=following-sibling::a').first().innerText();
 		} catch (e) {}
 
-		try	{
+		try {
 			interessenkreis = await this.page
 				.getByText('Interessenkreis:')
 				.locator('xpath=following-sibling::a')
